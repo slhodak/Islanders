@@ -1,0 +1,12 @@
+#map {
+  height: 500px;
+  width: 500px;
+  background-color: blue;
+
+  display: grid;
+  grid-template: repeat(32, 1fr) / repeat(32, 1fr);
+}
+
+#island {
+  background-color: tan;
+}
