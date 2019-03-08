@@ -10,3 +10,7 @@
 #island {
   background-color: tan;
 }
+
+#island:hover {
+  background-color: white;
+}
