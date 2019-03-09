@@ -39,3 +39,6 @@ Island Stats:
 	- population
 	- price is a function of scarcity and population
 
+	- for each island created on map, assign stats
+		- stats visible when selected
+		- stats assigned to global variables used in price funciton
