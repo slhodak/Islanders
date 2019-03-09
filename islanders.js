@@ -14,7 +14,7 @@ $(document).ready(function() {
   let playerOne = {
       myName: 'Sam',
       groves: 0,
-      gold: 0
+      mines: 0
   };
 
   displayStats(playerOne);
@@ -25,9 +25,47 @@ $(document).ready(function() {
 
 });
 
+// Island Stat Functions
+function generateIslandStats() {
+  let island = {};
+  // random lushness, rockiness
+  let environment = randomEnvironment();
+  island.rocky = environment.rocky;
+  island.lush = environment.lush;
+  // random population
+  island.population = randomPopulation();
+  // also maximum groves and mines
+  island.maxMines = Math.floor(island.rocky / 10);
+  island.maxGroves = Math.floor(island.rocky / 10);
+  // island starts with one mine and grove for every 4 maximum
+  island.mines = Math.floor(island.maxMines / 4);
+  island.groves = Math.floor(island.maxGroves / 4);  
+  // scarcity
+  island.copperScarcity = Math.ceil(((island.mines || 1) * island.population) / 100);
+  island.oliveScarcity = Math.ceil(((island.groves || 1) * island.population) / 100);
+
+  return island;
+}
+
+function randomPopulation() {
+  return Math.ceil(Math.random() * 1000);
+}
+
+function randomEnvironment() {
+  let rocky = Math.round(Math.random() * 90);
+  let lush = Math.round(Math.random() * (100 - rocky));
+  return {
+    rocky: rocky,
+    lush: lush
+  };
+}
+
+
+
+
+// Transaction Panel Functions
 let scarcity = 100;
 
-// increase volume, price per goes down, total price is sum
 function logPrice(quantity) {
   if (quantity < 1) {
     return 0;
@@ -52,13 +90,14 @@ function displayTotalPrice(price) {
   $('#totalPrice').text(price.toString());
 }
 
+// Player Display Panel Functions
 function displayStats(player) {
   $('#name').text('Name: '+ player.myName);
-  $('#gold').text('Gold: ' + player.gold);
+  $('#mines').text('Mines: ' + player.mines);
   $('#groves').text('Groves: ' + player.groves); 
 }
 
-
+// Map creation functions
 function createIsland(map, coordinates) {
   let $island = $('<div></div>');
   $island.attr('id', 'island');
