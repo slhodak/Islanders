@@ -23,6 +23,8 @@ $(document).ready(function() {
 
   displayStats(playerOne);
 
+  let $selectedGood = $('#selectedGood');
+
   $('#quantity').on('change', function(e) {
     quantity = this.value;
     trackQuantity(quantity, scarcity);
@@ -34,11 +36,18 @@ $(document).ready(function() {
   });
 
   $('#trade #copper').on('click', function(e) {
-    scarcity = selectedIsland.copperScarcity;
+    if (selectedIsland) {
+      scarcity = selectedIsland.copperScarcity;
+    }
+    $selectedGood.text('Copper');
     trackQuantity(quantity, scarcity);
   });
+
   $('#trade #oliveOil').on('click', function(e) {
-    scarcity = selectedIsland.oliveOilScarcity;
+    if (selectedIsland) {
+      scarcity = selectedIsland.oliveOilScarcity;
+    }
+    $selectedGood.text('Olive Oil');
     trackQuantity(quantity, scarcity);
   });
   
