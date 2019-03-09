@@ -60,19 +60,14 @@ function randomEnvironment() {
   };
 }
 
-
-
-
 // Transaction Panel Functions
-let scarcity = 100;
-
-function logPrice(quantity) {
+function logPrice(quantity, scarcity) {
   if (quantity < 1) {
     return 0;
   } else if (quantity === 1) {
     return logPrice(2);
   } else {
-    return scarcity * (1 / Math.log(quantity + 2));
+    return (scarcity * 100) * (1 / Math.log(quantity + 2));
   }
 }
 
