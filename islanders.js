@@ -6,7 +6,7 @@ let islands = [];
 let selectedIsland = undefined;
 let selectedIslandElement = undefined;
 let scarcity = 0;
-let quantity = 0;
+let goodsQuantity = 0;
 let playerOne = {
     myName: 'Sam',
     totalGroves: 0,
@@ -28,9 +28,9 @@ $(document).ready(function() {
 
   let $selectedGood = $('#selectedGood');
 
-  $('#quantity').on('change', function(e) {
-    quantity = this.value;
-    trackQuantity(quantity, scarcity);
+  $('#goodsQuantity').on('change', function(e) {
+    goodsQuantity = this.value;
+    trackGoodsQuantity(goodsQuantity, scarcity);
   });
 
   $('.island').on('click', function(e) {
@@ -42,20 +42,20 @@ $(document).ready(function() {
     displayPlayerIslandStats(this);
   });
 
-  $('#trade #copper').on('click', function(e) {
+  $('#sellGoods #copper').on('click', function(e) {
     if (selectedIsland) {
       scarcity = selectedIsland.copperScarcity;
     }
     $selectedGood.text('Copper');
-    trackQuantity(quantity, scarcity);
+    trackGoodsQuantity(goodsQuantity, scarcity);
   });
 
-  $('#trade #oliveOil').on('click', function(e) {
+  $('#sellGoods #oliveOil').on('click', function(e) {
     if (selectedIsland) {
       scarcity = selectedIsland.oliveOilScarcity;
     }
     $selectedGood.text('Olive Oil');
-    trackQuantity(quantity, scarcity);
+    trackGoodsQuantity(goodsQuantity, scarcity);
   });
   
 });
@@ -118,28 +118,28 @@ function randomEnvironment() {
 }
 
 // Transaction Panel Functions
-function logPrice(quantity, scarcity) {
-  if (quantity < 1) {
+function logGoodsPrice(goodsQuantity, scarcity) {
+  if (goodsQuantity < 1) {
     return 0;
-  } else if (quantity === 1) {
-    return logPrice(2);
+  } else if (goodsQuantity === 1) {
+    return logGoodsPrice(2);
   } else {
-    return (scarcity * 100) * (1 / Math.log(quantity + 2));
+    return (scarcity * 100) * (1 / Math.log(goodsQuantity + 2));
   }
 }
 
-function trackQuantity(quantity, scarcity) {
-  var pricePer = logPrice(quantity, scarcity);
-  displayPricePer(pricePer);
-  displayTotalPrice(pricePer * quantity);
+function trackGoodsQuantity(goodsQuantity, scarcity) {
+  var pricePerGood = logGoodsPrice(goodsQuantity, scarcity);
+  displayPricePerGood(pricePerGood);
+  displayTotalGoodsPrice(pricePerGood * goodsQuantity);
 }
 
-function displayPricePer(price) {
-  $('#pricePer').text(price.toString());
+function displayPricePerGood(price) {
+  $('#pricePerGood').text(price.toString());
 }
 
-function displayTotalPrice(price) {
-  $('#totalPrice').text(price.toString());
+function displayTotalGoodsPrice(price) {
+  $('#totalGoodsPrice').text(price.toString());
 }
 
 // Player Stat Panel Functions

@@ -42,9 +42,14 @@ p {
   background-color: white;
 }
 
-#trade {
-  grid-area: 4 / 6 / span 2 / span 5;
+#sellGoods {
+  grid-area: 4 / 6 / span 1 / span 5;
   background-color: gray;
+}
+
+#buyFacilities {
+  grid-area: 5 / 6 / span 1 / span 5;
+  background-color: maroon;
 }
 
 #playerInventory {
