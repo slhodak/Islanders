@@ -1,3 +1,13 @@
+NEXT:
+	Personal Inventory (on island)
+	Option to buy groves and mines
+	They produce into inventory local to island
+	Then you can sell
+	Sales lower scarcity for a bit. Island has a consumption rate based on "natural scarcity" i.e. original scarcity.
+	Maybe eventually hide the scarcity number
+	Natural price difference between oil and copper?
+
+
 Trade between islands
 	Copper and olive oil
 

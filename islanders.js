@@ -6,6 +6,12 @@ let islands = [];
 let selectedIsland = undefined;
 let scarcity = 0;
 let quantity = 0;
+let playerOne = {
+    myName: 'Sam',
+    totalGroves: 0,
+    totalMines: 0,
+    totalGold: 0
+};
 
 // on ready
 $(document).ready(function() {
@@ -15,11 +21,7 @@ $(document).ready(function() {
   islands = generateAllIslands(20);
   plotAllIslands($map, islands);
 
-  let playerOne = {
-      myName: 'Sam',
-      groves: 0,
-      mines: 0
-  };
+  
 
   displayStats(playerOne);
 
@@ -33,6 +35,7 @@ $(document).ready(function() {
   $('.island').on('click', function(e) {
     selectedIsland = islands[parseInt($(this).attr('id'))];
     displayIslandStats(this);
+    displayPlayerIslandStats(this);
   });
 
   $('#trade #copper').on('click', function(e) {
@@ -89,6 +92,11 @@ function generateIslandStats() {
   island.copperScarcity = Math.ceil(((island.mines || 1) * island.population) / 100);
   island.oliveOilScarcity = Math.ceil(((island.groves || 1) * island.population) / 100);
 
+  island.playerMines = 0;
+  island.playerGroves = 0;
+  island.playerCopper = 0;
+  island.playerOliveOil = 0;
+
   return island;
 }
 
@@ -130,11 +138,15 @@ function displayTotalPrice(price) {
   $('#totalPrice').text(price.toString());
 }
 
-// Player Display Panel Functions
+// Player Stat Panel Functions
+function displayPlayerIslandStats(player) {
+
+}
+
 function displayStats(player) {
-  $('#name').text('Name: '+ player.myName);
-  $('#mines').text('Mines: ' + player.mines);
-  $('#groves').text('Groves: ' + player.groves); 
+  _.each(Object.keys(player), function(stat) {
+    $('#'+stat).text(stat + ': ' + player[stat])
+  });
 }
 
 // Map functions

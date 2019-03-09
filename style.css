@@ -46,3 +46,7 @@ p {
   grid-area: 4 / 6 / span 2 / span 5;
   background-color: gray;
 }
+
+#playerInventory {
+  background-color: rgba(0, 0, 0, 0.1);
+}
