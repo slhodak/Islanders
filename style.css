@@ -50,6 +50,7 @@ p {
 #buyFacilities {
   grid-area: 5 / 6 / span 1 / span 5;
   background-color: maroon;
+  color: gray;
 }
 
 #playerInventory {
