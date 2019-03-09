@@ -19,7 +19,39 @@ let playerOne = {
 
 let islandNames = [
   'Mykonos',
-  'Kithnos'
+  'Kithnos',
+  'Kea',
+  'Serifos',
+  'Siros',
+  'Sifnos',
+  'Andros',
+  'Giaros',
+  'Idra',
+  'Dokos',
+  'Methana',
+  'Poros',
+  'Rineia',
+  'Naxos',
+  'Antiparos',
+  'Iraklia',
+  'Schinousa',
+  'Keros',
+  'Ano Koufonisi',
+  'Kato Koufonisi',
+  'Amorgos',
+  'Donousa',
+  'Ios',
+  'Foleganrdos',
+  'Sikinos',
+  'Thirasia',
+  'Santorini',
+  'Kinaros',
+  'Astipalea',
+  'Leros',
+  'Kalimnos',
+  'Patmos',
+  'Tinos',
+  'Skiros'
 ];
 
 // on ready
@@ -28,8 +60,9 @@ $(document).ready(function() {
   $root.append($map);
 
   islands = generateAllIslands(islandDensity);
-  playerOne.location = islands[Math.floor(Math.random() * islandDensity)];
+  playerOne.location = islands[Math.floor(Math.random() * (islandDensity - 1))];
   plotAllIslands($map, islands);
+  $(playerOne.location[0]).css('background-color', 'maroon');
 
   
 
@@ -104,16 +137,17 @@ function displayIslandStats(islandElement) {
 // Island Functions
 function randomNonRepeatingIslandName() {
   let usedNames = [];
-  return function getName() {
-    let name = islandNames[Math.floor(Math.random() * islandNames.length)];
-    if (usedNames.length === islandNames.length) {
-      return 'out of names!';
-    } else if (_.contains(usedNames, name)) {
-      getName();
-    } else {
-      usedNames.push(name);
-      return name;
+  return function getName(used) {
+    let name = islandNames[Math.floor(Math.random() * (islandNames.length - 1))];
+    if (used) {
+      usedNames.push(...used);
     }
+    if (_.contains(usedNames, name)) {
+      return getName(usedNames);
+    }
+    usedNames.push(name);
+    console.log(name);
+    return name;
   }
 }
 
