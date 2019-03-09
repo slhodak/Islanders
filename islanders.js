@@ -4,6 +4,8 @@ const $map = $('<div></div>');
 const density = 20;
 let islands = [];
 let selectedIsland = undefined;
+let scarcity = 0;
+let quantity = 0;
 
 // on ready
 $(document).ready(function() {
@@ -22,18 +24,29 @@ $(document).ready(function() {
   displayStats(playerOne);
 
   $('#quantity').on('change', function(e) {
-    trackQuantity(this.value);
+    quantity = this.value;
+    trackQuantity(quantity, scarcity);
   });
 
   $('.island').on('click', function(e) {
-    selectedIsland = this;
-    displayIslandStats(selectedIsland);
+    selectedIsland = islands[parseInt($(this).attr('id'))];
+    displayIslandStats(this);
   });
+
+  $('#trade #copper').on('click', function(e) {
+    scarcity = selectedIsland.copperScarcity;
+    trackQuantity(quantity, scarcity);
+  });
+  $('#trade #oliveOil').on('click', function(e) {
+    scarcity = selectedIsland.oliveOilScarcity;
+    trackQuantity(quantity, scarcity);
+  });
+  
 });
 
 // Island Stat Display Functions
 function displayIslandStats(islandElement) {
-  let id = parseInt($(selectedIsland).attr('id'));
+  let id = parseInt($(islandElement).attr('id'));
   _.each(Object.keys(islands[id]), function(key) {
     $('#islandDisplay p#' + key).text(key + ': ' + islands[id][key]);
   });
@@ -59,13 +72,13 @@ function generateIslandStats() {
   island.population = randomPopulation();
   // also maximum groves and mines
   island.maxMines = Math.floor(island.rocky / 10);
-  island.maxGroves = Math.floor(island.rocky / 10);
+  island.maxGroves = Math.floor(island.lush / 10);
   // island starts with one mine and grove for every 4 maximum
   island.mines = Math.floor(island.maxMines / 4);
   island.groves = Math.floor(island.maxGroves / 4);  
   // scarcity
   island.copperScarcity = Math.ceil(((island.mines || 1) * island.population) / 100);
-  island.oliveScarcity = Math.ceil(((island.groves || 1) * island.population) / 100);
+  island.oliveOilScarcity = Math.ceil(((island.groves || 1) * island.population) / 100);
 
   return island;
 }
@@ -94,8 +107,8 @@ function logPrice(quantity, scarcity) {
   }
 }
 
-function trackQuantity(quantity) {
-  var pricePer = logPrice(quantity);
+function trackQuantity(quantity, scarcity) {
+  var pricePer = logPrice(quantity, scarcity);
   displayPricePer(pricePer);
   displayTotalPrice(pricePer * quantity);
 }
