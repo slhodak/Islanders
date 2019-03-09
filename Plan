@@ -1,11 +1,15 @@
 NEXT:
 	Personal Inventory (on island) √
-	Option to buy groves and mines 
-	They produce into inventory local to island
+	Option to buy groves and mines √
+	Player location
+	Buy facilities
+	Facilities produce into inventory local to island
 	Then you can sell
 	Sales lower scarcity for a bit. Island has a consumption rate based on "natural scarcity" i.e. original scarcity.
-	Maybe eventually hide the scarcity number
-	Natural price difference between oil and copper?
+	Exporting
+
+
+
 
 
 Trade between islands
@@ -87,5 +91,7 @@ NOTES:
 	- Non-sensical scarcity values when maxGroves = 0 but population is low
 		- But is it non-sensical?
 	- Problem: must select island before good/facility button. Should not matter.
+	- Eventually hide the scarcity number
+	- Natural price difference between oil and copper?
 
 
