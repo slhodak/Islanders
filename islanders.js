@@ -25,15 +25,16 @@ $(document).ready(function() {
 
 });
 
-// increase volume, price per goes down, total price is sum
+let scarcity = 100;
 
+// increase volume, price per goes down, total price is sum
 function logPrice(quantity) {
   if (quantity < 1) {
     return 0;
   } else if (quantity === 1) {
     return logPrice(2);
   } else {
-    return 50 * (1 / Math.log(quantity + 2));
+    return scarcity * (1 / Math.log(quantity + 2));
   }
 }
 
