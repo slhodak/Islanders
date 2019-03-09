@@ -46,4 +46,27 @@ Island Stats:
 
 Transactions
 	- if island is selected, use scarcity value for functions
+		- button switch between olive oil and copper
 	- enable buying groves or mines based on maxes
+
+	- i cannot buy copper and olive oil, only sell it
+		- I buy groves and mines
+
+	- what about communication? how do I tell my people on different islands what to do?
+		- i pick an island to situate myself on at a given moment. takes me time to move between islands.
+		- And I have an agent (who player functions as) anywhere I have built a grove or mine... elsewhere I cannot see unless I go. 
+		- Only I can buy groves and mines in person (agents are stationary and not authorized to expand to different businesses but can expand to more of what they do (grove or mine))
+		- island I am on changes color when I am on it
+		- inventory piles up on each island it's produced on. can be sold to any island, time depends on distance. Price is price upon arrival unless I have a grove there then the local agent can secure a price for future delivery.
+
+Player wealth
+	- My mines on island
+	- My groves on island
+		- as opposed to all others
+	- groves and mines I put on an island do not affect scarcity of goods there, that still determined by groves and mines of others... but honestly why wouldn't i sell there first-return is fastest (measured in seconds or turns? leaning towards seconds. with pause button)
+
+
+
+
+
+
