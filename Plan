@@ -75,7 +75,9 @@ Player wealth
 		- as opposed to all others
 	- groves and mines I put on an island do not affect scarcity of goods there, that still determined by groves and mines of others... but honestly why wouldn't i sell there first-return is fastest (measured in seconds or turns? leaning towards seconds. with pause button)
 
-
+Mines and Groves
+	- mines and groves construction time directly proportional to cost
+		- e.g. 1 second per 10 coin cost (1800 coins = 180 seconds = 3 minutes)
 
 
 NOTES:
