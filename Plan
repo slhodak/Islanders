@@ -1,0 +1,32 @@
+Trade between islands
+	Copper and olive oil
+
+Islands all have stats
+	population
+	number of olive groves and maximum
+	number of copper mines and maximum
+
+Sell olive oil to rocky islands with few trees
+Sell copper to lush islands with few rocks
+
+Trades take time based on distance between islands
+
+You trade olive oil for copper and copper for olive oil
+
+Spend copper and olive oil to build groves and mines (no currency)
+
+Olive oil is more valuable where it is harder to make
+Copper is more valuable where it is harder to mine
+
+
+Scarcity rating: 0 to 10
+Scarcity rating rises faster based on difficulty of producing something domestically
+The higher the scarcity rating, the more you can get with that good
+The more you sell to an island, the lower the scarcity rating goes
+The more you put in a sale, the lower the price is per item (bulk/demand curve)
+	- try this out
+		- Need:
+			- click button to increase number, watch price per item go down, watch total price go up.
+				- opposite is true of sales
+			- transaction segment of page
+
