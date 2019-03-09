@@ -19,8 +19,37 @@ $(document).ready(function() {
 
   displayStats(playerOne);
 
+  $('#quantity').on('change', function(e) {
+    trackQuantity(this.value);
+  });
+
 });
 
+// increase volume, price per goes down, total price is sum
+
+function logPrice(quantity) {
+  if (quantity < 1) {
+    return 0;
+  } else if (quantity === 1) {
+    return logPrice(2);
+  } else {
+    return 50 * (1 / Math.log(quantity + 2));
+  }
+}
+
+function trackQuantity(quantity) {
+  var pricePer = logPrice(quantity);
+  displayPricePer(pricePer);
+  displayTotalPrice(pricePer * quantity);
+}
+
+function displayPricePer(price) {
+  $('#pricePer').text(price.toString());
+}
+
+function displayTotalPrice(price) {
+  $('#totalPrice').text(price.toString());
+}
 
 function displayStats(player) {
   $('#name').text('Name: '+ player.myName);

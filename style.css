@@ -33,3 +33,8 @@ body {
 #island:hover {
   background-color: white;
 }
+
+#trade {
+  grid-area: 3 / 6 / span 2 / span 5;
+  background-color: gray;
+}
