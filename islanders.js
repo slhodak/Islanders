@@ -4,6 +4,7 @@ const $map = $('<div></div>');
 const density = 20;
 let islands = [];
 let selectedIsland = undefined;
+let selectedIslandElement = undefined;
 let scarcity = 0;
 let quantity = 0;
 let playerOne = {
@@ -33,6 +34,9 @@ $(document).ready(function() {
   });
 
   $('.island').on('click', function(e) {
+    $(selectedIslandElement).css('background-color', 'tan');
+    $(this).css('background-color', 'green');
+    selectedIslandElement = this;
     selectedIsland = islands[parseInt($(this).attr('id'))];
     displayIslandStats(this);
     displayPlayerIslandStats(this);
