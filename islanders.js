@@ -60,19 +60,27 @@ $(document).ready(function() {
     trackGoodsQuantity(goodsQuantity, goodsScarcity);
   });
 
+  $('#facilitiesQuantity').on('change', function(e) {
+    facilitiesQuantity = this.value;
+    trackFacilitiesQuantity(facilitiesQuantity, facilityScarcity);
+  });
+
   $('#buyFacilities #mines').on('click', function(e) {
     if (selectedIsland) {
-      facilityScarcity = calculateFacilityScarcity(selectedIsland, 'rocky');
+      facilityScarcity = calculateFacilityScarcity(selectedIsland, 'mines');
     }
-    $selectedFacility.text('Copper');
+    console.log(facilityScarcity);
+    $selectedFacility.text('Mines');
     trackFacilitiesQuantity(facilitiesQuantity, facilityScarcity);
   });
 
   $('#buyFacilities #groves').on('click', function(e) {
     if (selectedIsland) {
-      facilityScarcity = calculateFacilityScarcity(selectedIsland, 'lush');
+      facilityScarcity = calculateFacilityScarcity(selectedIsland, 'groves');
     }
-    $selectedFacility.text('Olive Oil');
+    console.log(facilityScarcity);
+
+    $selectedFacility.text('Groves');
     trackFacilitiesQuantity(facilitiesQuantity, facilityScarcity);
   });
   
@@ -143,7 +151,7 @@ function calculateFacilityScarcity(island, type) {
   // relationship of population and usable land
   let terrain = '';
   type === 'mines' ? terrain = 'rocky' : terrain = 'lush';
-  return (100 * (1/island.population)) + (10 * (1/island[terrain])) + (0.1 * island[type]);
+  return (100 * (1/island.population)) + (100 * (1/island[terrain])) + (0.1 * island[type]);
 }
 
 function trackFacilitiesQuantity(facilitiesQuantity, facilitiesScarcity) {
@@ -154,7 +162,7 @@ function trackFacilitiesQuantity(facilitiesQuantity, facilitiesScarcity) {
 }
 
 function exponentialFacilitesPrice(facilitiesQuantity, facilityScarcity) {
-  return Math.pow(facilitiesQuantity + facilityScarcity, 2);
+  return Math.pow(facilitiesQuantity + (15 * facilityScarcity), 1.2);
 }
 
 function displayPricePerFacility(price) {
