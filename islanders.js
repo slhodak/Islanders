@@ -11,46 +11,21 @@ $(document).ready(function() {
     createIsland($map, coordinates[i]); 
   }
 
-  createPlayerDisplay();
+  let playerOne = {
+      myName: 'Sam',
+      groves: 0,
+      gold: 0
+  };
 
   displayStats(playerOne);
 
 });
 
-let playerOne = {
-    name: 'Sam',
-    groves: 0,
-    gold: 0
-  };
-
-let playerTwo = {
-  name: '',
-  groves: 0,
-  gold: 0
-};
 
 function displayStats(player) {
-  $('#name').text('Name: '+ player[name]);
-  $('#gold').text('Gold: ' + player[gold]);
-  $('#groves').text('Groves: ' + player[groves]); 
-}
-
-function createPlayerDisplay() {
-  $playerDiv = $('<div></div>');
-  $playerName = $('<p></p>');
-  $playerGold = $('<p></p>');
-  $playerGroves = $('<p></p>');
-
-  $playerDiv.attr('id', 'playerOne');
-  $playerName.attr('id', 'name');
-  $playerGold.attr('id', 'gold');
-  $playerGroves.attr('id', 'groves');
-
-  $playerName.appendTo($playerDiv);
-  $playerGold.appendTo($playerDiv);
-  $playerGroves.appendTo($playerDiv);
-
-  $playerDiv.appendTo($('#display'));
+  $('#name').text('Name: '+ player.myName);
+  $('#gold').text('Gold: ' + player.gold);
+  $('#groves').text('Groves: ' + player.groves); 
 }
 
 
