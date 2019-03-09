@@ -1,8 +1,8 @@
 // Global vars
 const $root = $('#root');
 const $map = $('<div></div>');
-const density = 20;
-let islands = [];
+const islandDensity = 20;
+let island = [];
 let selectedIsland = undefined;
 let selectedIslandElement = undefined;
 let goodsScarcity = 0;
@@ -13,15 +13,22 @@ let playerOne = {
     myName: 'Sam',
     totalGroves: 0,
     totalMines: 0,
-    totalGold: 0
+    totalGold: 0,
+    location: {}
 };
+
+let islandNames = [
+  'Mykonos',
+  'Kithnos'
+];
 
 // on ready
 $(document).ready(function() {
   $map.attr('id', 'map');
   $root.append($map);
 
-  islands = generateAllIslands(20);
+  islands = generateAllIslands(islandDensity);
+  playerOne.location = islands[Math.floor(Math.random() * islandDensity)];
   plotAllIslands($map, islands);
 
   
@@ -94,18 +101,35 @@ function displayIslandStats(islandElement) {
   });
 }
 
-
 // Island Functions
+function randomNonRepeatingIslandName() {
+  let usedNames = [];
+  return function getName() {
+    let name = islandNames[Math.floor(Math.random() * islandNames.length)];
+    if (usedNames.length === islandNames.length) {
+      return 'out of names!';
+    } else if (_.contains(usedNames, name)) {
+      getName();
+    } else {
+      usedNames.push(name);
+      return name;
+    }
+  }
+}
+
 function generateAllIslands(number) {
   let islands = [];
+  let nameFunction = randomNonRepeatingIslandName();
   for (let i = 0; i < number; i++) {
-    islands.push(generateIslandStats());
+    islands.push(generateIslandStats(nameFunction));
   }
   return islands;
 }
 
-function generateIslandStats() {
+function generateIslandStats(nameFunction) {
   let island = {};
+  // island name
+  island.islandName = nameFunction();
   // random lushness, rockiness
   let environment = randomEnvironment();
   island.rocky = environment.rocky;
@@ -201,7 +225,11 @@ function displayTotalGoodsPrice(price) {
 // Player Stat Panel Functions
 function displayStats(player) {
   _.each(Object.keys(player), function(stat) {
-    $('#'+stat).text(stat + ': ' + player[stat])
+    if (stat === 'location') {
+      $('#' + stat).text(stat + ': ' + player[stat].islandName);
+    } else {
+      $('#' + stat).text(stat + ': ' + player[stat])
+    }
   });
 }
 
