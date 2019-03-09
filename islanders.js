@@ -10,7 +10,6 @@ $(document).ready(function() {
   $map.attr('id', 'map');
   $root.append($map);
 
-
   islands = generateAllIslands(20);
   plotAllIslands($map, islands);
 
@@ -36,7 +35,7 @@ $(document).ready(function() {
 function displayIslandStats(islandElement) {
   let id = parseInt($(selectedIsland).attr('id'));
   _.each(Object.keys(islands[id]), function(key) {
-    $('#islandDisplay p#' + key).text(islands[id][key]);
+    $('#islandDisplay p#' + key).text(key + ': ' + islands[id][key]);
   });
 }
 
