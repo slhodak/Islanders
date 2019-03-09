@@ -1,9 +1,28 @@
+body {
+  margin: 0px;
+}
+
+
+#root {
+  width: 1000px;
+  height: 1000px;
+  border: 20px ridge gray;
+  display: grid;
+  grid-template: repeat(10, 1fr) / repeat(10, 1fr);
+}
+
+#display {
+  grid-area: 1 / 6 / span 2 / span 5;
+  background-color: wheat;
+}
+
 #map {
-  height: 500px;
-  width: 500px;
+  height: 100%;
+  width: 100%;
   background-color: blue;
 
-  display: grid;
+  grid-area: 1 / 1 / span 5 / span 5;
+  display: inline-grid;
   grid-template: repeat(32, 1fr) / repeat(32, 1fr);
 }
 

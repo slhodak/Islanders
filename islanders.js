@@ -6,13 +6,52 @@ $(document).ready(function() {
   $map.attr('id', 'map');
   $root.append($map);
 
-
   let coordinates = createCoordinates(density, 32);
   for (let i = 0; i < density; i++) {
     createIsland($map, coordinates[i]); 
   }
 
+  createPlayerDisplay();
+
+  displayStats(playerOne);
+
 });
+
+let playerOne = {
+    name: 'Sam',
+    groves: 0,
+    gold: 0
+  };
+
+let playerTwo = {
+  name: '',
+  groves: 0,
+  gold: 0
+};
+
+function displayStats(player) {
+  $('#name').text('Name: '+ player[name]);
+  $('#gold').text('Gold: ' + player[gold]);
+  $('#groves').text('Groves: ' + player[groves]); 
+}
+
+function createPlayerDisplay() {
+  $playerDiv = $('<div></div>');
+  $playerName = $('<p></p>');
+  $playerGold = $('<p></p>');
+  $playerGroves = $('<p></p>');
+
+  $playerDiv.attr('id', 'playerOne');
+  $playerName.attr('id', 'name');
+  $playerGold.attr('id', 'gold');
+  $playerGroves.attr('id', 'groves');
+
+  $playerName.appendTo($playerDiv);
+  $playerGold.appendTo($playerDiv);
+  $playerGroves.appendTo($playerDiv);
+
+  $playerDiv.appendTo($('#display'));
+}
 
 
 function createIsland(map, coordinates) {
