@@ -84,5 +84,6 @@ NOTES:
 	- Too many islands with identical scarcity values
 	- Non-sensical scarcity values when maxGroves = 0 but population is low
 		- But is it non-sensical?
+	- Problem: must select island before good/facility button. Should not matter.
 
 
