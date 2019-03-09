@@ -41,4 +41,9 @@ Island Stats:
 
 	- for each island created on map, assign stats
 		- stats visible when selected
-		- stats assigned to global variables used in price funciton
+		- stats assigned to global variables used in price function
+
+
+Transactions
+	- if island is selected, use scarcity value for functions
+	- enable buying groves or mines based on maxes

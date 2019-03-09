@@ -1,13 +1,17 @@
+// Global vars
 const $root = $('#root');
 const $map = $('<div></div>');
 const density = 20;
+let islands = [];
+let selectedIsland = undefined;
 
+// on ready
 $(document).ready(function() {
   $map.attr('id', 'map');
   $root.append($map);
 
 
-  let islands = generateAllIslands(20);
+  islands = generateAllIslands(20);
   plotAllIslands($map, islands);
 
   let playerOne = {
@@ -22,7 +26,20 @@ $(document).ready(function() {
     trackQuantity(this.value);
   });
 
+  $('.island').on('click', function(e) {
+    selectedIsland = this;
+    displayIslandStats(selectedIsland);
+  });
 });
+
+// Island Stat Display Functions
+function displayIslandStats(islandElement) {
+  let id = parseInt($(selectedIsland).attr('id'));
+  _.each(Object.keys(islands[id]), function(key) {
+    $('#islandDisplay p#' + key).text(islands[id][key]);
+  });
+}
+
 
 // Island Functions
 function generateAllIslands(number) {
@@ -113,7 +130,7 @@ function plotAllIslands(map, islands) {
 function plotIsland(map, coordinates, id) {
   let $island = $('<div></div>');
   $island.addClass('island');
-  $island.attr('id', 'island' + id);
+  $island.attr('id', id);
   // why doesn't .css() work?
   $island.attr('style', 'grid-area: ' + coordinates[0] + ' / ' + coordinates[1] + ';');
   map.append($island);
