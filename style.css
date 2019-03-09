@@ -26,11 +26,11 @@ body {
   grid-template: repeat(32, 1fr) / repeat(32, 1fr);
 }
 
-#island {
+.island {
   background-color: tan;
 }
 
-#island:hover {
+.island:hover {
   background-color: white;
 }
 

@@ -6,10 +6,9 @@ $(document).ready(function() {
   $map.attr('id', 'map');
   $root.append($map);
 
-  let coordinates = createCoordinates(density, 32);
-  for (let i = 0; i < density; i++) {
-    createIsland($map, coordinates[i]); 
-  }
+
+  let islands = generateAllIslands(20);
+  plotAllIslands($map, islands);
 
   let playerOne = {
       myName: 'Sam',
@@ -25,7 +24,15 @@ $(document).ready(function() {
 
 });
 
-// Island Stat Functions
+// Island Functions
+function generateAllIslands(number) {
+  let islands = [];
+  for (let i = 0; i < number; i++) {
+    islands.push(generateIslandStats());
+  }
+  return islands;
+}
+
 function generateIslandStats() {
   let island = {};
   // random lushness, rockiness
@@ -92,10 +99,21 @@ function displayStats(player) {
   $('#groves').text('Groves: ' + player.groves); 
 }
 
-// Map creation functions
-function createIsland(map, coordinates) {
+// Map functions
+
+// first create island stats, push island object into array
+// next create islands for map based on length of that array, assign id according to index
+function plotAllIslands(map, islands) {
+  let coordinates = createCoordinates(islands.length, 32);
+  for (let i = 0; i < islands.length; i++) {
+    plotIsland(map, coordinates[i], i);
+  }
+}
+
+function plotIsland(map, coordinates, id) {
   let $island = $('<div></div>');
-  $island.attr('id', 'island');
+  $island.addClass('island');
+  $island.attr('id', 'island' + id);
   // why doesn't .css() work?
   $island.attr('style', 'grid-area: ' + coordinates[0] + ' / ' + coordinates[1] + ';');
   map.append($island);
