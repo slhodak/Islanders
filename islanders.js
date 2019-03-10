@@ -14,7 +14,7 @@ let playerOne = {
     myName: 'Sam',
     totalGroves: 0,
     totalMines: 0,
-    totalGold: 0,
+    totalGold: 1000,
     location: {}
 };
 
@@ -63,9 +63,8 @@ $(document).ready(function() {
   islands = generateAllIslands(islandDensity);
   playerOne.location = islands[Math.floor(Math.random() * (islandDensity - 1))];
   plotAllIslands($map, islands);
-  $(playerOne.location[0]).css('background-color', 'maroon');
 
-  
+  $('#' + islands.indexOf(playerOne.location)).css('background-color', 'maroon');
 
   displayStats(playerOne);
 
@@ -78,7 +77,11 @@ $(document).ready(function() {
   });
 
   $('.island').on('click', function(e) {
-    $(selectedIslandElement).css('background-color', 'tan');
+    if (selectedIsland !== playerOne.location) {
+      $(selectedIslandElement).css('background-color', 'tan');  
+    } else {
+      $(selectedIslandElement).css('background-color', 'maroon');
+    }
     $(this).css('background-color', 'green');
     selectedIslandElement = this;
     selectedIsland = islands[parseInt($(this).attr('id'))];
@@ -109,6 +112,7 @@ $(document).ready(function() {
   $('#buyFacilities #mines').on('click', function(e) {
     if (selectedIsland) {
       facilityScarcity = calculateFacilityScarcity(selectedIsland, 'mines');
+      selectedFacility = 'mines';
       $('#facilitiesQuantity').attr('max', selectedIsland.maxMines - selectedIsland.mines);
     }
     console.log(facilityScarcity);
@@ -119,12 +123,17 @@ $(document).ready(function() {
   $('#buyFacilities #groves').on('click', function(e) {
     if (selectedIsland) {
       facilityScarcity = calculateFacilityScarcity(selectedIsland, 'groves');
+      selectedFacility = 'groves';
       $('#facilitiesQuantity').attr('max', selectedIsland.maxGroves - selectedIsland.groves);
     }
     console.log(facilityScarcity);
 
     $selectedFacility.text('Groves');
     trackFacilitiesQuantity(facilitiesQuantity, facilityScarcity);
+  });
+
+  $('#buyFacilities #buy').on('click', function(e) {
+    purchaseFacilities(parseInt($('#buyFacilities #facilitiesQuantity').val()));
   });
   
 });
@@ -208,6 +217,32 @@ function randomEnvironment() {
 // cheaper to build on islands with more lush or rock and more population
 //    most expensive place to build is less land and small population
 //    highest price to sell is less land and small population -- these would be importers
+
+function purchaseFacilities(quantity) {
+  if (selectedIsland !== playerOne.location) {
+  // only possible if you have access to that area-- if you are on it or you own a facility of the same type on it
+    return;
+  } else {
+    let cost = exponentialFacilitesPrice(quantity, facilityScarcity);
+    if (playerOne.totalGold < cost) {
+      return;
+    } else {
+      playerOne.totalGold -= cost;
+      if (selectedFacility === 'mines') {
+        selectedIsland.playerMines += quantity;
+        playerOne.totalMines += quantity;
+      } else {
+        selectedIsland.playerGroves += quantity;
+        playerOne.totalGroves += quantity;
+      }
+      displayStats(playerOne);
+      displayIslandStats(selectedIslandElement);
+    }
+  }
+  // subtract cost from player gold
+  // add facility to island of purchase
+}
+
 function calculateFacilityScarcity(island, type) {
   // relationship of population and usable land
   let terrain = '';

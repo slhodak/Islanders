@@ -16,7 +16,7 @@ NEXT:
 		Some variables which are global should be properties on island, probably
 		+ other Scope/refactoring things like this
 		I'm repeating myself
-
+		Craziness going on with facility scarcity variables and parameters
 
 
 
