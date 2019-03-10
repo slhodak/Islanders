@@ -256,7 +256,6 @@ function generateIslandStats(nameFunction) {
   let island = {};
   // island name
   island.islandName = nameFunction();
-  island.coordinates = createCoordinates();
   // random lushness, rockiness
   let environment = randomEnvironment();
   island.rocky = environment.rocky;
