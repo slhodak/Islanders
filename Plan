@@ -2,13 +2,17 @@ NEXT:
 	Personal Inventory (on island) √
 	Option to buy groves and mines √
 	Player location √
-		- make display on map 
+		- make display on map √
 	Facility prices don't make sense √
+		- facility prices increase faster in bulk buy than incremental buy
 		- Facility maximum √
 	Goods prices don't make sense √
-	Buy facilities
+	Buy facilities √
 	Facilities produce into inventory local to island
 	Then you can sell
+	Clock
+		- scarcity of everything goes down (slowly) over time
+		- goal of game is to make as much profit as possible before all scarcity === 0!
 	Sales lower scarcity for a bit. Island has a consumption rate based on "natural scarcity" i.e. original scarcity.
 	Exporting
 
