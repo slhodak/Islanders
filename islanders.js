@@ -76,11 +76,6 @@ $(document).ready(function() {
   let $selectedGood = $('#selectedGood');
   let $selectedFacility = $('#selectedFacility');
 
-  $('#goodsQuantity').on('change', function(e) {
-    goodsQuantity = this.value;
-    trackGoodsQuantity(goodsQuantity, goodsScarcity);
-  });
-
   $('.island').on('mousedown', function(e) {
     if (selectedIsland !== playerOne.location) {
       $(selectedIslandElement).css('background-color', '');  
@@ -96,52 +91,54 @@ $(document).ready(function() {
     displayIslandStats(selectedIsland);
   });
 
-  $('#sellGoods #copper').on('click', function(e) {
+  $('#goodsQuantity').on('change', function(e) {
+    goodsQuantity = this.value;
+    trackGoodsQuantity(goodsQuantity, goodsScarcity);
+  });
+
+  $('#sellGoods #copper').on('mousedown', function(e) {
     if (selectedIsland) {
       goodsScarcity = selectedIsland.copperScarcity; 
       selectedGood = 'copper';
-      $('#sellGoods #goodsQuantity').attr('max', selectedIsland.playerCopper);
+      $('#sellGoods #goodsQuantity').attr('max', playerOne.location.playerCopper);
     }
     $selectedGood.text('Copper');
     trackGoodsQuantity(goodsQuantity, goodsScarcity);
   });
 
-  $('#sellGoods #oliveOil').on('click', function(e) {
+  $('#sellGoods #oliveOil').on('mousedown', function(e) {
     if (selectedIsland) {
       goodsScarcity = selectedIsland.oliveOilScarcity;
       selectedGood = 'oliveOil';
-      $('#sellGoods #goodsQuantity').attr('max', selectedIsland.playerOliveOil);
+      $('#sellGoods #goodsQuantity').attr('max', playerOne.location.playerOliveOil);
     }
     $selectedGood.text('Olive Oil');
     trackGoodsQuantity(goodsQuantity, goodsScarcity);
   });
 
   $('#facilitiesQuantity').on('change', function(e) {
-    facilitiesQuantity = this.value;
-    trackFacilitiesQuantity(facilitiesQuantity, facilityScarcity);
+    facilityQuantity = this.value;
+    trackFacilitiesQuantity(facilitysQuantity, facilityScarcity);
   });
 
-  $('#buyFacilities #mines').on('click', function(e) {
+  $('#buyFacilities #mines').on('mousedown', function(e) {
     if (selectedIsland) {
       facilityScarcity = calculateFacilityScarcity(selectedIsland, 'mines');
       selectedFacility = 'mines';
       $('#facilitiesQuantity').attr('max', selectedIsland.maxMines - selectedIsland.mines - selectedIsland.playerMines);
     }
-    console.log(facilityScarcity);
     $selectedFacility.text('Mines');
-    trackFacilitiesQuantity(facilitiesQuantity, facilityScarcity);
+    trackFacilitiesQuantity(facilityQuantity, facilityScarcity);
   });
 
-  $('#buyFacilities #groves').on('click', function(e) {
+  $('#buyFacilities #groves').on('mousedown', function(e) {
     if (selectedIsland) {
       facilityScarcity = calculateFacilityScarcity(selectedIsland, 'groves');
       selectedFacility = 'groves';
       $('#facilitiesQuantity').attr('max', selectedIsland.maxGroves - selectedIsland.groves - selectedIsland.playerGroves);
     }
-    console.log(facilityScarcity);
-
     $selectedFacility.text('Groves');
-    trackFacilitiesQuantity(facilitiesQuantity, facilityScarcity);
+    trackFacilitiesQuantity(facilityQuantity, facilityScarcity);
   });
 
   $('#buyFacilities #buy').on('mousedown', function(e) {
@@ -391,9 +388,7 @@ function goodsTransaction(quantity, sellingIsland) {
 }
 
 function calculateDeliveryTime(seller, buyer) {
-  let sellerElem = $('#' + islands.indexOf(seller)).attr('id');
-  let buyerElem = $('#' + islands.indexOf(buyer)).attr('id');
-  console.log('seller: ' + sellerElem + ', buyer: ' + buyerElem);
+  return Math.floor(math.distance(seller.coordinates, buyer.coordinates));
 }
 
 function logGoodsPrice(goodsQuantity, goodsScarcity) {
