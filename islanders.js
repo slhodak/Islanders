@@ -113,7 +113,7 @@ $(document).ready(function() {
     if (selectedIsland) {
       facilityScarcity = calculateFacilityScarcity(selectedIsland, 'mines');
       selectedFacility = 'mines';
-      $('#facilitiesQuantity').attr('max', selectedIsland.maxMines - selectedIsland.mines);
+      $('#facilitiesQuantity').attr('max', selectedIsland.maxMines - selectedIsland.mines - selectedIsland.playerMines);
     }
     console.log(facilityScarcity);
     $selectedFacility.text('Mines');
@@ -124,7 +124,7 @@ $(document).ready(function() {
     if (selectedIsland) {
       facilityScarcity = calculateFacilityScarcity(selectedIsland, 'groves');
       selectedFacility = 'groves';
-      $('#facilitiesQuantity').attr('max', selectedIsland.maxGroves - selectedIsland.groves);
+      $('#facilitiesQuantity').attr('max', selectedIsland.maxGroves - selectedIsland.groves - selectedIsland.playerGroves);
     }
     console.log(facilityScarcity);
 
@@ -246,8 +246,18 @@ function purchaseFacilities(quantity) {
 function calculateFacilityScarcity(island, type) {
   // relationship of population and usable land
   let terrain = '';
-  type === 'mines' ? terrain = 'rocky' : terrain = 'lush';
-  return Math.log((100 * (1/island.population)) + (100 * (1/island[terrain])) + (0.1 * island[type]));
+  let max = '';
+  let player = '';
+  if (type === 'mines') {
+    terrain = 'rocky';
+    max = 'maxMines';
+    player = 'playerMines';
+  } else {
+    terrain = 'lush';
+    max = 'maxGroves';
+    player = 'playerGroves';
+  }
+  return Math.log((100 * (1/island.population)) + (100 * (1/island[terrain])) + (0.1 * (island[max] + island[type] + island[player])));
 }
 
 function trackFacilitiesQuantity(facilitiesQuantity, facilitiesScarcity) {
