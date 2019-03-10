@@ -177,8 +177,8 @@ function generateIslandStats(nameFunction) {
   island.mines = Math.floor(island.maxMines / 4);
   island.groves = Math.floor(island.maxGroves / 4);  
   // goodsScarcity
-  island.copperScarcity = Math.ceil(((island.mines || 1) * island.population) / 100);
-  island.oliveOilScarcity = Math.ceil(((island.groves || 1) * island.population) / 100);
+  island.copperScarcity = calculateGoodScarcity(island, 'copper');
+  island.oliveOilScarcity = calculateGoodScarcity(island, 'oliveOil');
 
   island.playerMines = 0;
   island.playerGroves = 0;
@@ -242,8 +242,8 @@ function logGoodsPrice(goodsQuantity, goodsScarcity) {
   }
 }
 
-function trackGoodsQuantity(goodsQuantity, goodsScarcity) {
-  var pricePerGood = logGoodsPrice(goodsQuantity, goodsScarcity);
+function trackGoodsQuantity(goodsQuantity, goodScarcity) {
+  var pricePerGood = logGoodsPrice(goodsQuantity, goodScarcity);
   displayPricePerGood(pricePerGood);
   displayTotalGoodsPrice(pricePerGood * goodsQuantity);
 }
@@ -254,6 +254,20 @@ function displayPricePerGood(price) {
 
 function displayTotalGoodsPrice(price) {
   $('#totalGoodsPrice').text(price.toString());
+}
+
+function calculateGoodScarcity(island, type) {
+  let terrain = '';
+  let production = '';
+  if (type === 'copper') {
+    terrain = island.rocky || 0.1; 
+    production = island.mines || 0.1;
+  } else {
+    terrain = island.lush || 0.1; 
+    production = island.groves || 0.1;
+  }
+
+  return Math.round(Math.log(island.population * (1 / terrain) * (1 / production)));
 }
 
 // Player Stat Panel Functions
