@@ -19,6 +19,8 @@ let playerOne = {
     location: {}
 };
 
+let paused = false;
+
 let islandNames = [
   'Mykonos',
   'Kithnos',
@@ -145,6 +147,10 @@ $(document).ready(function() {
     sellGoods(parseInt($('#sellGoods #goodsQuantity').val()));
   });
 
+  $('#gameClock #hide').on('mousedown', function(e) {
+    $('#gameClock p').toggle();
+  });
+
   gameLoop();
 });
 
@@ -152,17 +158,26 @@ $(document).ready(function() {
 function gameLoop() {
   let count = 0;
   setInterval(function() {
-    count++;
-    console.log(count + '...athousand...');
-
-    facilityProduction();
-    displayStats(playerOne);
-    if (!selectedIsland) {
-      displayIslandStats($('#' + islands.indexOf(playerOne.location)));
-    } else {
-      displayIslandStats($('#' + islands.indexOf(selectedIsland)));  
-    }    
+    if (!paused) {
+      count++;
+      updateClock(count);
+      facilityProduction();
+      displayStats(playerOne);
+      if (!selectedIsland) {
+        displayIslandStats($('#' + islands.indexOf(playerOne.location)));
+      } else {
+        displayIslandStats($('#' + islands.indexOf(selectedIsland)));  
+      }
+    }
   }, 1000);
+}
+
+function togglePause() {
+  paused = !paused;
+}
+
+function updateClock(count) {
+  $('#gameClock #time').text('Day: ' + count);
 }
 
 function facilityProduction() {

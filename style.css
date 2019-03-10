@@ -56,3 +56,24 @@ p {
 #playerInventory {
   background-color: rgba(0, 0, 0, 0.1);
 }
+
+#gameClock {
+  grid-area: 1 / 10 / span 1 / span 1;
+  background-color: black;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+
+  display: grid;
+  grid-template: 1fr 1fr / 1fr 1fr;
+}
+
+#gameClock p {
+  grid-area: 1 / 1 / span 1 / span 2;
+  color: white;
+  font-size: 20px;
+}
+
+#gameClock button {
+  grid-area: 2 / 1 / span 1 / span 2;
+}
