@@ -86,7 +86,7 @@ $(document).ready(function() {
       receivingIsland = islands[parseInt($(this).attr('id'))];
     }
     $(this).css('background-color', 'green');
-    selectedIslandElement = $(this);
+    selectedIslandElement = this;
     selectedIsland = islands[parseInt($(this).attr('id'))];
     displayIslandStats(selectedIsland);
   });
@@ -118,7 +118,7 @@ $(document).ready(function() {
 
   $('#facilitiesQuantity').on('change', function(e) {
     facilityQuantity = this.value;
-    trackFacilitiesQuantity(facilitysQuantity, facilityScarcity);
+    trackFacilitiesQuantity(facilityQuantity, facilityScarcity);
   });
 
   $('#buyFacilities #mines').on('mousedown', function(e) {
@@ -177,9 +177,9 @@ function gameLoop() {
       facilityProduction();
       displayStats(playerOne);
       if (!selectedIsland) {
-        displayIslandStats($('#' + islands.indexOf(playerOne.location)));
+        displayIslandStats(playerOne.location);
       } else {
-        displayIslandStats($('#' + islands.indexOf(selectedIsland)));  
+        displayIslandStats(selectedIsland);  
       }
     }
   }, 1000);
@@ -212,7 +212,7 @@ function islanderFacilityCreation(day) {
         island.copperScarcity = calculateGoodScarcity(island, 'copper');
       }
     });
-    displayIslandStats(selectedIslandElement || $('#' + parseInt(islands.indexOf(playerOne.location))));
+    displayIslandStats(selectedIsland || playerOne.location);
   }
 }
 
@@ -315,7 +315,7 @@ function purchaseFacilities(quantity) {
         selectedIsland.oliveOilScarcity = calculateGoodScarcity(selectedIsland, 'oliveOil');
       }
       displayStats(playerOne);
-      displayIslandStats(selectedIslandElement);
+      displayIslandStats(selectedIsland);
     }
   }
   // subtract cost from player gold
@@ -339,19 +339,19 @@ function calculateFacilityScarcity(island, type) {
   return Math.log((100 * (1/island.population)) + (100 * (1/island[terrain])) + (0.1 * (island[max] + island[type] + island[player])));
 }
 
-function trackFacilitiesQuantity(facilitiesQuantity, facilitiesScarcity) {
+function trackFacilitiesQuantity(facilityQuantity, facilityScarcity) {
   // find price and display consequences
 
-  var pricePerFacility = exponentialFacilitesPrice(facilitiesQuantity, facilityScarcity);
+  var pricePerFacility = exponentialFacilitesPrice(facilityQuantity, facilityScarcity);
   displayPricePerFacility(pricePerFacility);
-  displayTotalFacilitiesPrice(pricePerFacility * facilitiesQuantity);
+  displayTotalFacilitiesPrice(pricePerFacility * facilityQuantity);
 }
 
-function exponentialFacilitesPrice(facilitiesQuantity, facilityScarcity) {
-  if (facilitiesQuantity < 1 || !selectedIsland) {
+function exponentialFacilitesPrice(facilityQuantity, facilityScarcity) {
+  if (facilityQuantity < 1 || !selectedIsland) {
     return 0;
   } else {
-    return 100 * Math.pow((0.5 * facilitiesQuantity) + (3 * facilityScarcity), 1.1);
+    return 100 * Math.pow((0.5 * facilityQuantity) + (3 * facilityScarcity), 1.1);
   }
 }
 
@@ -365,30 +365,29 @@ function displayTotalFacilitiesPrice(price) {
 
 // Goods Transaction Panel
 function sellGoods(quantity) {
-  let sellingIsland = playerOne.location;
   if (exporting) {
     setTimeout(function() {
-      goodsTransaction(quantity, sellingIsland);
-    }, calculateDeliveryTime(sellingIsland, receivingIsland));
+      goodsTransaction(quantity, receivingIsland);
+    }, calculateDeliveryTime(playerOne.location, receivingIsland));
   } else {
-    goodsTransaction(quantity, sellingIsland);
+    goodsTransaction(quantity, playerOne.location);
   }
   displayStats(playerOne);
-  displayIslandStats(selectedIslandElement);
+  displayIslandStats(playerOne.location);
 }
 
-function goodsTransaction(quantity, sellingIsland) {
+function goodsTransaction(quantity, receivingIsland) {
   if (selectedGood === 'copper') {
-    sellingIsland.playerCopper -= quantity;
+    playerOne.location.playerCopper -= quantity;
     playerOne.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'copper'));
   } else {
-    sellingIsland.playerOliveOil -= quantity;
+    playerOne.location.playerOliveOil -= quantity;
     playerOne.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'oliveOil'))
   }
 }
 
 function calculateDeliveryTime(seller, buyer) {
-  return Math.floor(math.distance(seller.coordinates, buyer.coordinates));
+  return 1000 * Math.floor(math.distance(seller.coordinates, buyer.coordinates));
 }
 
 function logGoodsPrice(goodsQuantity, goodsScarcity) {
