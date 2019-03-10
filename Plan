@@ -3,13 +3,19 @@ NEXT:
 	Option to buy groves and mines √
 	Player location √
 		- make display on map 
-	Facility prices don't make sense 
+	Facility prices don't make sense √
+		- Facility maximum √
 	Goods prices don't make sense √
 	Buy facilities
 	Facilities produce into inventory local to island
 	Then you can sell
 	Sales lower scarcity for a bit. Island has a consumption rate based on "natural scarcity" i.e. original scarcity.
 	Exporting
+
+	ISSUE:
+		Some variables which are global should be properties on island, probably
+		+ other Scope/refactoring things like this
+		I'm repeating myself
 
 
 

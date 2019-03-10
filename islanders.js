@@ -8,6 +8,7 @@ let selectedIslandElement = undefined;
 let goodsScarcity = 0;
 let facilityScarcity = 0;
 let goodsQuantity = 0;
+let selectedFacility = '';
 let facilityQuantity = 0;
 let playerOne = {
     myName: 'Sam',
@@ -108,6 +109,7 @@ $(document).ready(function() {
   $('#buyFacilities #mines').on('click', function(e) {
     if (selectedIsland) {
       facilityScarcity = calculateFacilityScarcity(selectedIsland, 'mines');
+      $('#facilitiesQuantity').attr('max', selectedIsland.maxMines - selectedIsland.mines);
     }
     console.log(facilityScarcity);
     $selectedFacility.text('Mines');
@@ -117,6 +119,7 @@ $(document).ready(function() {
   $('#buyFacilities #groves').on('click', function(e) {
     if (selectedIsland) {
       facilityScarcity = calculateFacilityScarcity(selectedIsland, 'groves');
+      $('#facilitiesQuantity').attr('max', selectedIsland.maxGroves - selectedIsland.groves);
     }
     console.log(facilityScarcity);
 
@@ -214,6 +217,7 @@ function calculateFacilityScarcity(island, type) {
 
 function trackFacilitiesQuantity(facilitiesQuantity, facilitiesScarcity) {
   // find price and display consequences
+
   var pricePerFacility = exponentialFacilitesPrice(facilitiesQuantity, facilityScarcity);
   displayPricePerFacility(pricePerFacility);
   displayTotalFacilitiesPrice(pricePerFacility * facilitiesQuantity);
