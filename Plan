@@ -2,9 +2,9 @@ NEXT:
 	Personal Inventory (on island) √
 	Option to buy groves and mines √
 	Player location √
-		- make display on map
-	Facility prices don't make sense
-	Goods prices don't make sense
+		- make display on map 
+	Facility prices don't make sense 
+	Goods prices don't make sense √
 	Buy facilities
 	Facilities produce into inventory local to island
 	Then you can sell

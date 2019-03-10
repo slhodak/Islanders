@@ -189,7 +189,7 @@ function generateIslandStats(nameFunction) {
 }
 
 function randomPopulation() {
-  return Math.ceil(Math.random() * 1000);
+  return Math.ceil(Math.random() * 9000) + 1000;
 }
 
 function randomEnvironment() {
@@ -209,7 +209,7 @@ function calculateFacilityScarcity(island, type) {
   // relationship of population and usable land
   let terrain = '';
   type === 'mines' ? terrain = 'rocky' : terrain = 'lush';
-  return (100 * (1/island.population)) + (100 * (1/island[terrain])) + (0.1 * island[type]);
+  return Math.log((100 * (1/island.population)) + (100 * (1/island[terrain])) + (0.1 * island[type]));
 }
 
 function trackFacilitiesQuantity(facilitiesQuantity, facilitiesScarcity) {
@@ -220,7 +220,11 @@ function trackFacilitiesQuantity(facilitiesQuantity, facilitiesScarcity) {
 }
 
 function exponentialFacilitesPrice(facilitiesQuantity, facilityScarcity) {
-  return Math.pow(facilitiesQuantity + (15 * facilityScarcity), 1.2);
+  if (facilitiesQuantity < 1 || !selectedIsland) {
+    return 0;
+  } else {
+    return 100 * Math.pow((0.5 * facilitiesQuantity) + (3 * facilityScarcity), 1.1);
+  }
 }
 
 function displayPricePerFacility(price) {
@@ -233,7 +237,7 @@ function displayTotalFacilitiesPrice(price) {
 
 // Goods Transaction Panel
 function logGoodsPrice(goodsQuantity, goodsScarcity) {
-  if (goodsQuantity < 1) {
+  if (goodsQuantity < 1 || !selectedIsland) {
     return 0;
   } else if (goodsQuantity === 1) {
     return logGoodsPrice(2);
