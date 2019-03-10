@@ -18,6 +18,8 @@ let playerOne = {
     totalGold: 1000,
     location: {}
 };
+let exporting = false;
+let receivingIsland = undefined;
 
 let paused = false;
 
@@ -79,16 +81,20 @@ $(document).ready(function() {
     trackGoodsQuantity(goodsQuantity, goodsScarcity);
   });
 
-  $('.island').on('click', function(e) {
+  $('.island').on('mousedown', function(e) {
     if (selectedIsland !== playerOne.location) {
       $(selectedIslandElement).css('background-color', 'tan');  
     } else {
       $(selectedIslandElement).css('background-color', 'maroon');
     }
+    if (exporting) {
+      receivingIsland = islands[parseInt($(this).attr('id'))];
+
+    }
     $(this).css('background-color', 'green');
-    selectedIslandElement = this;
+    selectedIslandElement = $(this);
     selectedIsland = islands[parseInt($(this).attr('id'))];
-    displayIslandStats(this);
+    displayIslandStats(selectedIsland);
   });
 
   $('#sellGoods #copper').on('click', function(e) {
@@ -147,6 +153,15 @@ $(document).ready(function() {
     sellGoods(parseInt($('#sellGoods #goodsQuantity').val()));
   });
 
+  $('#sellGoods #export').on('mousedown', function(e) {
+    exporting = !exporting;
+    if (exporting === true) {
+      $(this).css('background-color', 'green');
+    } else {
+      $(this).css('background-color', '');
+    }
+  });
+
   $('#gameClock #hide').on('mousedown', function(e) {
     $('#gameClock p').toggle();
   });
@@ -156,11 +171,12 @@ $(document).ready(function() {
 
 // Game Clock/Loop
 function gameLoop() {
-  let count = 0;
+  let day = 0;
   setInterval(function() {
     if (!paused) {
-      count++;
-      updateClock(count);
+      day++;
+      updateClock(day);
+      islanderFacilityCreation(day);
       facilityProduction();
       displayStats(playerOne);
       if (!selectedIsland) {
@@ -176,23 +192,37 @@ function togglePause() {
   paused = !paused;
 }
 
-function updateClock(count) {
-  $('#gameClock #time').text('Day: ' + count);
+function updateClock(day) {
+  $('#gameClock #time').text('Day: ' + day);
 }
 
 function facilityProduction() {
-  // for every facility owned on every island, add some copper/olive oil to my inventory on that island
   _.each(islands, function(island) {
     island.playerCopper += island.playerMines;
     island.playerOliveOil += island.playerGroves;
   });
 }
 
+function islanderFacilityCreation(day) {
+  if (day % 50 === 0) {
+    _.each(islands, function(island) {
+      if (island.groves + island.playerGroves < island.maxGroves) {
+        island.groves += 1;
+        island.oliveOilScarcity = calculateGoodScarcity(island, 'oliveOil');
+      }
+      if (island.mines + island.playerMines < island.maxMines) {
+        island.mines += 1;
+        island.copperScarcity = calculateGoodScarcity(island, 'copper');
+      }
+    });
+    displayIslandStats(selectedIslandElement || $('#' + parseInt(islands.indexOf(playerOne.location))));
+  }
+}
+
 // Island Stat Display Functions
-function displayIslandStats(islandElement) {
-  let id = parseInt($(islandElement).attr('id'));
-  _.each(Object.keys(islands[id]), function(key) {
-    $('#islandDisplay p#' + key).text(key + ': ' + islands[id][key]);
+function displayIslandStats(island) {
+  _.each(Object.keys(island), function(key) {
+    $('#islandDisplay p#' + key).text(key + ': ' + island[key]);
   });
 }
 
@@ -281,9 +311,11 @@ function purchaseFacilities(quantity) {
       if (selectedFacility === 'mines') {
         selectedIsland.playerMines += quantity;
         playerOne.totalMines += quantity;
+        selectedIsland.copperScarcity = calculateGoodScarcity(selectedIsland, 'copper');
       } else {
         selectedIsland.playerGroves += quantity;
         playerOne.totalGroves += quantity;
+        selectedIsland.oliveOilScarcity = calculateGoodScarcity(selectedIsland, 'oliveOil');
       }
       displayStats(playerOne);
       displayIslandStats(selectedIslandElement);

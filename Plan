@@ -11,20 +11,26 @@ NEXT:
 	Facilities produce into inventory local to island
 	Then you can sell
 	Clock
-		- scarcity of everything goes down (slowly) over time
+		- scarcity of everything goes down (slowly) over time √
 		- goal of game is to make as much profit as possible before all scarcity === 0!
 	Sales lower scarcity for a bit. Island has a consumption rate based on "natural scarcity" i.e. original scarcity.
 	Exporting
 
 	Minimum:
-		- producing from faciliites
-		- selling from facilities
-		- clock increasing non-player facilities
+		- producing from facilities √ bugs
+		- selling from facilities √ bugs
+		- clock increasing non-player facilities √
+			- make sure scarcity is reacting √
+				- and make it neat code!
 		- exporting
+			- calculate distance between islands (use x/y coordinates and some handy trig)
+			- base delivery time on distance
 	Better:
 		- moving between islands, building on them
+		- populations growing logarithmically?
 
 	ISSUE:
+		Gold from sales don't add up
 		Some variables which are global should be properties on island, probably
 		+ other Scope/refactoring things like this
 		I'm repeating myself
