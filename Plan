@@ -16,6 +16,14 @@ NEXT:
 	Sales lower scarcity for a bit. Island has a consumption rate based on "natural scarcity" i.e. original scarcity.
 	Exporting
 
+	Minimum:
+		- producing from faciliites
+		- selling from facilities
+		- clock increasing non-player facilities
+		- exporting
+	Better:
+		- moving between islands, building on them
+
 	ISSUE:
 		Some variables which are global should be properties on island, probably
 		+ other Scope/refactoring things like this

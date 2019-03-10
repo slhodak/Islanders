@@ -10,6 +10,7 @@ let facilityScarcity = 0;
 let goodsQuantity = 0;
 let selectedFacility = '';
 let facilityQuantity = 0;
+let selectedGood = '';
 let playerOne = {
     myName: 'Sam',
     totalGroves: 0,
@@ -90,7 +91,9 @@ $(document).ready(function() {
 
   $('#sellGoods #copper').on('click', function(e) {
     if (selectedIsland) {
-      goodsScarcity = selectedIsland.copperScarcity;
+      goodsScarcity = selectedIsland.copperScarcity; 
+      selectedGood = 'copper';
+      $('#sellGoods #goodsQuantity').attr('max', selectedIsland.playerCopper);
     }
     $selectedGood.text('Copper');
     trackGoodsQuantity(goodsQuantity, goodsScarcity);
@@ -99,6 +102,8 @@ $(document).ready(function() {
   $('#sellGoods #oliveOil').on('click', function(e) {
     if (selectedIsland) {
       goodsScarcity = selectedIsland.oliveOilScarcity;
+      selectedGood = 'oliveOil';
+      $('#sellGoods #goodsQuantity').attr('max', selectedIsland.playerOliveOil);
     }
     $selectedGood.text('Olive Oil');
     trackGoodsQuantity(goodsQuantity, goodsScarcity);
@@ -132,11 +137,41 @@ $(document).ready(function() {
     trackFacilitiesQuantity(facilitiesQuantity, facilityScarcity);
   });
 
-  $('#buyFacilities #buy').on('click', function(e) {
+  $('#buyFacilities #buy').on('mousedown', function(e) {
     purchaseFacilities(parseInt($('#buyFacilities #facilitiesQuantity').val()));
   });
-  
+
+  $('#sellGoods #sell').on('mousedown', function(e) {
+    sellGoods(parseInt($('#sellGoods #goodsQuantity').val()));
+  });
+
+  gameLoop();
 });
+
+// Game Clock/Loop
+function gameLoop() {
+  let count = 0;
+  setInterval(function() {
+    count++;
+    console.log(count + '...athousand...');
+
+    facilityProduction();
+    displayStats(playerOne);
+    if (!selectedIsland) {
+      displayIslandStats($('#' + islands.indexOf(playerOne.location)));
+    } else {
+      displayIslandStats($('#' + islands.indexOf(selectedIsland)));  
+    }    
+  }, 1000);
+}
+
+function facilityProduction() {
+  // for every facility owned on every island, add some copper/olive oil to my inventory on that island
+  _.each(islands, function(island) {
+    island.playerCopper += island.playerMines;
+    island.playerOliveOil += island.playerGroves;
+  });
+}
 
 // Island Stat Display Functions
 function displayIslandStats(islandElement) {
@@ -223,7 +258,7 @@ function purchaseFacilities(quantity) {
   // only possible if you have access to that area-- if you are on it or you own a facility of the same type on it
     return;
   } else {
-    let cost = exponentialFacilitesPrice(quantity, facilityScarcity);
+    let cost = quantity * exponentialFacilitesPrice(quantity, facilityScarcity);
     if (playerOne.totalGold < cost) {
       return;
     } else {
@@ -285,6 +320,18 @@ function displayTotalFacilitiesPrice(price) {
 }
 
 // Goods Transaction Panel
+function sellGoods(quantity) {
+  if (selectedGood === 'copper') {
+    selectedIsland.playerCopper -= quantity;
+    playerOne.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(selectedIsland, 'copper'));
+  } else {
+    selectedIsland.playerOliveOil -= quantity;
+    playerOne.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(selectedIsland, 'oliveOil'))
+  }
+  displayStats(playerOne);
+  displayIslandStats(selectedIslandElement);
+}
+
 function logGoodsPrice(goodsQuantity, goodsScarcity) {
   if (goodsQuantity < 1 || !selectedIsland) {
     return 0;
