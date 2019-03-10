@@ -83,13 +83,12 @@ $(document).ready(function() {
 
   $('.island').on('mousedown', function(e) {
     if (selectedIsland !== playerOne.location) {
-      $(selectedIslandElement).css('background-color', 'tan');  
+      $(selectedIslandElement).css('background-color', '');  
     } else {
       $(selectedIslandElement).css('background-color', 'maroon');
     }
     if (exporting) {
       receivingIsland = islands[parseInt($(this).attr('id'))];
-
     }
     $(this).css('background-color', 'green');
     selectedIslandElement = $(this);
@@ -159,6 +158,7 @@ $(document).ready(function() {
       $(this).css('background-color', 'green');
     } else {
       $(this).css('background-color', '');
+      receivingIsland = playerOne.location;
     }
   });
 
@@ -256,6 +256,7 @@ function generateIslandStats(nameFunction) {
   let island = {};
   // island name
   island.islandName = nameFunction();
+  island.coordinates = createCoordinates();
   // random lushness, rockiness
   let environment = randomEnvironment();
   island.rocky = environment.rocky;
@@ -368,15 +369,32 @@ function displayTotalFacilitiesPrice(price) {
 
 // Goods Transaction Panel
 function sellGoods(quantity) {
-  if (selectedGood === 'copper') {
-    selectedIsland.playerCopper -= quantity;
-    playerOne.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(selectedIsland, 'copper'));
+  let sellingIsland = playerOne.location;
+  if (exporting) {
+    setTimeout(function() {
+      goodsTransaction(quantity, sellingIsland);
+    }, calculateDeliveryTime(sellingIsland, receivingIsland));
   } else {
-    selectedIsland.playerOliveOil -= quantity;
-    playerOne.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(selectedIsland, 'oliveOil'))
+    goodsTransaction(quantity, sellingIsland);
   }
   displayStats(playerOne);
   displayIslandStats(selectedIslandElement);
+}
+
+function goodsTransaction(quantity, sellingIsland) {
+  if (selectedGood === 'copper') {
+    sellingIsland.playerCopper -= quantity;
+    playerOne.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'copper'));
+  } else {
+    sellingIsland.playerOliveOil -= quantity;
+    playerOne.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'oliveOil'))
+  }
+}
+
+function calculateDeliveryTime(seller, buyer) {
+  let sellerElem = $('#' + islands.indexOf(seller)).attr('id');
+  let buyerElem = $('#' + islands.indexOf(buyer)).attr('id');
+  console.log('seller: ' + sellerElem + ', buyer: ' + buyerElem);
 }
 
 function logGoodsPrice(goodsQuantity, goodsScarcity) {
@@ -433,9 +451,18 @@ function displayStats(player) {
 // first create island stats, push island object into array
 // next create islands for map based on length of that array, assign id according to index
 function plotAllIslands(map, islands) {
+  assignCoordinates(islands);
+  for (let i = 0; i < islands.length; i++) {
+    plotIsland(map, islands[i].coordinates, i);
+  }
+}
+
+// I'm mutating my array!! Can use closure to assign non-repeating coordinates within the
+// island creation function
+function assignCoordinates(islands) {
   let coordinates = createCoordinates(islands.length, 32);
   for (let i = 0; i < islands.length; i++) {
-    plotIsland(map, coordinates[i], i);
+    islands[i].coordinates = coordinates[i];
   }
 }
 
