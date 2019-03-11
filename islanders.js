@@ -217,6 +217,15 @@ $(document).ready(function() {
     $('#clockAndPause p').toggle();
   });
 
+  $('#clockAndPause #pause').on('mousedown', function(e) {
+    paused = !paused;
+    if (paused) {
+      $(this).addClass('paused'); 
+    } else {
+      $(this).removeClass('paused');
+    }
+  })
+
   displayIslandStats();
   gameLoop();
 });
@@ -570,6 +579,7 @@ function changeActiveIsland(island) {
   }
   $('#' + previous.id).attr('class', 'island');
   highlightActiveIslands();
+  displayIslandStats();
 }
 
 function highlightActiveIslands() {

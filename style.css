@@ -101,14 +101,14 @@ p {
 }
 
 #clockAndPause {
-  grid-area: 1 / 10 / span 1 / span 1;
+  grid-area: 1 / 8 / span 1 / span 3;
   background-color: black;
   height: 100%;
   width: 100%;
   z-index: 1;
 
   display: grid;
-  grid-template: 1fr 1fr / 1fr 1fr;
+  grid-template: repeat(2, 50%) / repeat(4, 25%);
 }
 
 #clockAndPause p {
@@ -117,6 +117,15 @@ p {
   font-size: 20px;
 }
 
-#clockAndPause button {
+#clockAndPause #hide {
   grid-area: 2 / 1 / span 1 / span 2;
+}
+
+#clockAndPause #pause {
+  grid-area: 2 / 3 / span 1 / span 2;
+}
+
+.paused {
+  background-color: gray;
+  border: 3px inset white;
 }

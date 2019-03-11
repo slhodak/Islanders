@@ -30,3 +30,9 @@ For instance:
   obj[selectedIsland] = selection;
 
   wabam!
+-------------------
+  So you can sell things based on whether you are there or whether you have an industry of that type on the island
+  More use of objects seems helpful here
+  
+
+  
