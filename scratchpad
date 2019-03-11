@@ -1,0 +1,32 @@
+i think my way of assigning colors to the divs based on selections is probably not even on a very good track. I already know I'm going to refactor it, but it looks like it could be better done using tools I'm completely neglecting.
+
+What if I create an object:
+  {
+    selectedIsland: undefined,
+    exportIsland: undefined,
+    playerLocation: undefined
+  }
+
+And I assign things to these slots based on whether I'm picking the export island or moving the player or not
+
+Then at the end of the assignments I evaluate the object to decide what color the element will be
+
+But I also have to keep track of which element was taken out of the object
+That element will get changed back
+
+As for the player movement taking time, I'll make the destination island maroon immediately but I'll put an 'in transit' notice in the player's panel
+
+For instance:
+
+  obj = {
+    selectedIsland: myKonos,
+    exportIsland: Knossos,
+    playerLocation: Argos
+  };
+
+  I click on an island and exporting is off:
+
+  obj[selectedIsland].attr('id', 'island');
+  obj[selectedIsland] = selection;
+
+  wabam!

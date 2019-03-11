@@ -3,8 +3,15 @@ const $root = $('#root');
 const $map = $('<div></div>');
 const islandDensity = 20;
 let islands = []
-let selectedIsland = undefined;
-let exportIsland = undefined;
+
+let activeIslands = {
+  playerLocation: undefined,
+  exportIsland: undefined,
+  selectedIsland: undefined
+};
+let exporting = false;
+let moving = false;
+
 let goodsScarcity = 0;
 let facilityScarcity = 0;
 let goodsQuantity = 0;
@@ -18,7 +25,6 @@ let playerOne = {
     totalGold: 1000,
     location: {}
 };
-let exporting = false;
 
 let paused = false;
 
@@ -65,10 +71,12 @@ $(document).ready(function() {
   $root.append($map);
 
   islands = generateAllIslands(islandDensity);
-  playerOne.location = islands[Math.floor(Math.random() * (islandDensity - 1))];
+  activeIslands.playerLocation = islands[Math.floor(Math.random() * (islandDensity - 1))];
+  activeIslands.selectedIsland = activeIslands.playerLocation;
+  activeIslands.exportIsland = activeIslands.playerLocation;
   plotAllIslands($map, islands);
 
-  $('#' + islands.indexOf(playerOne.location)).css('background-color', 'maroon');
+  $('#' + islands.indexOf(activeIslands.playerLocation)).css('background-color', 'maroon');
 
   displayStats(playerOne);
 
@@ -76,44 +84,13 @@ $(document).ready(function() {
   let $selectedFacility = $('#selectedFacility');
 
   $('.island').on('mousedown', function(e) {
-    // if exporting and selectedisland, selection changes selected island and export island
-    // if exporting and no selectedisland, selection changes no previous
-    // export island is orange, supercedes selected island in green
-    // if not exporting, selection only changes selected island
-    // selection island is green
-    // previous island goes back to tan
-    var selectedIslandElement = undefined;
+    if (moving) {
 
-    if (exporting && exportIsland) {
-      if (exportIsland === playerOne.location) {
-        $('#' + islands.indexOf(playerOne.location)).attr('class', 'island playerIsland');
-      }
-      $('#' + islands.indexOf(exportIsland)).attr('class', 'island');
-      $(this).attr('class', 'island exportIsland');
-      exportIsland = islands[parseInt($(this).attr('id'))];
-      displayIslandStats(exportIsland);
-    }
-    if (exporting && !exportIsland) {
-      $(this).attr('class', 'island exportIsland');
-      exportIsland = islands[parseInt($(this).attr('id'))];
-      displayIslandStats(exportIsland);
-    }
-    if (!exporting && selectedIsland) {
-      if (selectedIsland === playerOne.location) {
-        $('#' + islands.indexOf(playerOne.location)).attr('class', 'island playerIsland');
-      }
-      $('#' + islands.indexOf(selectedIsland)).attr('class', 'island');
-      $(this).attr('class', 'island selectedIsland');
-      selectedIsland = islands[parseInt($(this).attr('id'))];
-      displayIslandStats(selectedIsland);
-    }
-    if (!exporting && !selectedIsland) {
-      $(this).attr('class', 'island selectedIsland');
-      selectedIsland = islands[parseInt($(this).attr('id'))];
-      displayIslandStats(selectedIsland);
-    }
+    } else if (exporting) {
 
+    } else {
 
+    }
   });
 
   $('#goodsQuantity').on('change', function(e) {
@@ -186,6 +163,7 @@ $(document).ready(function() {
   $('#clockAndPause #hide').on('mousedown', function(e) {
     $('#clockAndPause p').toggle();
   });
+
 
   displayIslandStats(playerOne.location);
   gameLoop();
@@ -273,15 +251,16 @@ function generateAllIslands(number) {
   let islands = [];
   let nameFunction = randomNonRepeatingIslandName();
   for (let i = 0; i < number; i++) {
-    islands.push(generateIslandStats(nameFunction));
+    islands.push(generateIslandStats(nameFunction, i));
   }
   return islands;
 }
 
-function generateIslandStats(nameFunction) {
+function generateIslandStats(nameFunction, id) {
   let island = {};
-  // island name
+  // island name & id
   island.islandName = nameFunction();
+  island.id = id;
   // random lushness, rockiness
   let environment = randomEnvironment();
   island.rocky = environment.rocky;
@@ -474,7 +453,7 @@ function displayStats(player) {
 function plotAllIslands(map, islands) {
   assignCoordinates(islands);
   for (let i = 0; i < islands.length; i++) {
-    plotIsland(map, islands[i].coordinates, i);
+    plotIsland(map, islands[i].coordinates, islands[i].id);
   }
 }
 
@@ -511,4 +490,8 @@ function nonRepeatingRandomIntArrayInRange(many, range) {
         }
     }
     return result;
-};
+}
+
+function assignIslandColors() {
+
+}
