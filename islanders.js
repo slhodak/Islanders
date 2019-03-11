@@ -16,13 +16,16 @@ let choosingPlayerTravel = false;
 let traveling = false;
 let timerId = 0;
 
+let selections = {
+  selectedFacility: undefined,
+  selectedGood: undefined,
+  exporting: false
+}
 
 let goodsScarcity = 0;
 let facilityScarcity = 0;
 let goodsQuantity = 0;
-let selectedFacility = '';
 let facilityQuantity = 0;
-let selectedGood = '';
 let playerOne = {
     myName: 'Sam',
     totalGroves: 0,
@@ -85,9 +88,6 @@ $(document).ready(function() {
   
   displayStats(playerOne);
 
-  let $selectedGood = $('#selectedGood');
-  let $selectedFacility = $('#selectedFacility');
-
   $('.island').on('mousedown', function(e) {
     var thisIsland = islands[parseInt($(this).attr('id'))];
     changeActiveIsland(thisIsland);
@@ -139,22 +139,26 @@ $(document).ready(function() {
   });
 
   $('#sellGoods #copper').on('mousedown', function(e) {
-    if (activeIslands.selectedIsland) {
-      goodsScarcity = activeIslands.selectedIsland.copperScarcity; 
-      selectedGood = 'copper';
-      $('#sellGoods #goodsQuantity').attr('max', activeIslands.playerLocation.playerCopper);
-    }
-    $selectedGood.text('Copper');
+    $('#sellGoods #oliveOil').removeClass('sellingOliveOil');
+    $(this).addClass('sellingCopper');
+    // this shared scarcity / quantity variable is no good
+    goodsScarcity = activeIslands.selectedIsland.copperScarcity; 
+    // send all change selections logic to a function that adjusts relevant numbers/maxes
+    // have this affect eligibility but keep that logic close to the sale/purchase functions
+    
+    // stop using strings for this--send the selectedIsland's playerCopper value, use that
+    selections.selectedGood = 'copper';
+
+    $('#sellGoods #goodsQuantity').attr('max', activeIslands.playerLocation.playerCopper);
     trackGoodsQuantity(goodsQuantity, goodsScarcity);
   });
 
   $('#sellGoods #oliveOil').on('mousedown', function(e) {
-    if (activeIslands.selectedIsland) {
-      goodsScarcity = activeIslands.selectedIsland.oliveOilScarcity;
-      selectedGood = 'oliveOil';
-      $('#sellGoods #goodsQuantity').attr('max', activeIslands.playerLocation.playerOliveOil);
-    }
-    $selectedGood.text('Olive Oil');
+    $('#sellGoods #copper').removeClass('sellingCopper');
+    $(this).addClass('sellingOliveOil');
+    goodsScarcity = activeIslands.selectedIsland.oliveOilScarcity;
+    selections.selectedGood = 'oliveOil';
+    $('#sellGoods #goodsQuantity').attr('max', activeIslands.playerLocation.playerOliveOil);
     trackGoodsQuantity(goodsQuantity, goodsScarcity);
   });
 
@@ -164,22 +168,20 @@ $(document).ready(function() {
   });
 
   $('#buyFacilities #mines').on('mousedown', function(e) {
-    if (activeIslands.selectedIsland) {
-      facilityScarcity = calculateFacilityScarcity(activeIslands.selectedIsland, 'mines');
-      selectedFacility = 'mines';
-      $('#facilitiesQuantity').attr('max', activeIslands.selectedIsland.maxMines - activeIslands.selectedIsland.mines - activeIslands.selectedIsland.playerMines);
-    }
-    $selectedFacility.text('Mines');
+    $('#buyFacilities #groves').removeClass('buyingGroves');
+    $(this).addClass('buyingMines');
+    facilityScarcity = calculateFacilityScarcity(activeIslands.selectedIsland, 'mines');
+    selectedFacility = 'mines';
+    $('#facilitiesQuantity').attr('max', activeIslands.selectedIsland.maxMines - activeIslands.selectedIsland.mines - activeIslands.selectedIsland.playerMines);
     trackFacilitiesQuantity(facilityQuantity, facilityScarcity);
   });
 
   $('#buyFacilities #groves').on('mousedown', function(e) {
-    if (activeIslands.selectedIsland) {
-      facilityScarcity = calculateFacilityScarcity(activeIslands.selectedIsland, 'groves');
-      selectedFacility = 'groves';
-      $('#facilitiesQuantity').attr('max', activeIslands.selectedIsland.maxGroves - activeIslands.selectedIsland.groves - activeIslands.selectedIsland.playerGroves);
-    }
-    $selectedFacility.text('Groves');
+    $('#buyFacilities #mines').removeClass('buyingMines');
+    $(this).addClass('buyingGroves');
+    facilityScarcity = calculateFacilityScarcity(activeIslands.selectedIsland, 'groves');
+    selectedFacility = 'groves';
+    $('#facilitiesQuantity').attr('max', activeIslands.selectedIsland.maxGroves - activeIslands.selectedIsland.groves - activeIslands.selectedIsland.playerGroves);
     trackFacilitiesQuantity(facilityQuantity, facilityScarcity);
   });
 
@@ -210,6 +212,19 @@ $(document).ready(function() {
       resetButton($('#importer'));
     } else {
       resetButton($(this));
+    }
+  });
+
+  $('#sellGoods #export').on('mousedown', function(e) {
+    selections.exporting = !selections.exporting;
+    if (selections.exporting) {
+      $(this).removeClass('notExporting');
+      $(this).addClass('exporting');
+      $(this).text('Exporting');
+    } else {
+      $(this).removeClass('exporting');
+      $(this).addClass('notExporting');
+      $(this).text('Not exporting');
     }
   });
 
@@ -588,4 +603,3 @@ function highlightActiveIslands() {
   $('#' + activeIslands.importIsland.id).attr('class', 'island importIsland');
   $('#' + activeIslands.playerLocation.id).attr('class', 'island playerIsland');
 }
-
