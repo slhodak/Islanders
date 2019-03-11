@@ -7,9 +7,11 @@ let islands = []
 let activeIslands = {
   playerLocation: undefined,
   exportIsland: undefined,
+  importIsland: undefined,
   selectedIsland: undefined
 };
-let exporting = false;
+let choosingExporter = false;
+let choosingImporter = false;
 let moving = false;
 
 let goodsScarcity = 0;
@@ -22,8 +24,7 @@ let playerOne = {
     myName: 'Sam',
     totalGroves: 0,
     totalMines: 0,
-    totalGold: 1000,
-    location: {}
+    totalGold: 1000
 };
 
 let paused = false;
@@ -74,10 +75,11 @@ $(document).ready(function() {
   activeIslands.playerLocation = islands[Math.floor(Math.random() * (islandDensity - 1))];
   activeIslands.selectedIsland = activeIslands.playerLocation;
   activeIslands.exportIsland = activeIslands.playerLocation;
+  activeIslands.importIsland = activeIslands.playerLocation;
   plotAllIslands($map, islands);
 
-  $('#' + islands.indexOf(activeIslands.playerLocation)).css('background-color', 'maroon');
-
+  highlightActiveIslands();
+  
   displayStats(playerOne);
 
   let $selectedGood = $('#selectedGood');
@@ -146,12 +148,25 @@ $(document).ready(function() {
     sellGoods(parseInt($('#sellGoods #goodsQuantity').val()));
   });
 
-  $('#sellGoods #export').on('mousedown', function(e) {
-    exporting = !exporting;
-    if (exporting === true) {
+  $('#sellGoods #importer').on('mousedown', function(e) {
+    choosingImporter = !choosingImporter;
+    choosingExporter = false;
+    if (choosingImporter === true) {
       $(this).css('background-color', 'orange');
+      resetButton($('#exporter'));
     } else {
-      $(this).css('background-color', '');
+      resetButton($(this));
+    }
+  });
+
+  $('#sellGoods #exporter').on('mousedown', function(e) {
+    choosingExporter = !choosingExporter;
+    choosingImporter = false;
+    if (choosingExporter === true) {
+      $(this).css('background-color', 'turquoise');
+      resetButton($('#importer'));
+    } else {
+      resetButton($(this));
     }
   });
 
@@ -159,10 +174,14 @@ $(document).ready(function() {
     $('#clockAndPause p').toggle();
   });
 
-
   displayIslandStats();
   gameLoop();
 });
+
+// Button functions
+function resetButton(button) {
+  $(button).css('background-color', '');
+}
 
 // Game Clock/Loop
 function gameLoop() {
@@ -215,8 +234,8 @@ function displayIslandStats() {
   _.each(Object.keys(activeIslands.selectedIsland), function(key) {
     $('#selectedIslandDisplay p#' + key).text(key + ': ' + activeIslands.selectedIsland[key]);
   });
-  _.each(Object.keys(activeIslands.exportIsland), function(key) {
-    $('#exportIslandDisplay p#' + key).text(key + ': ' + activeIslands.exportIsland[key]);  
+  _.each(Object.keys(activeIslands.importIsland), function(key) {
+    $('#importIslandDisplay p#' + key).text(key + ': ' + activeIslands.importIsland[key]);  
   });
 }
 
@@ -294,10 +313,8 @@ function randomEnvironment() {
 //    highest price to sell is less land and small population -- these would be importers
 
 function purchaseFacilities(quantity) {
-  if (activeIslands.selectedIsland !== activeIslands.playerLocation) {
+  if (activeIslands.selectedIsland === activeIslands.playerLocation) {
   // only possible if you have access to that area-- if you are on it or you own a facility of the same type on it
-    return;
-  } else {
     let cost = quantity * exponentialFacilitesPrice(quantity, facilityScarcity);
     if (playerOne.totalGold < cost) {
       return;
@@ -314,7 +331,9 @@ function purchaseFacilities(quantity) {
       }
       displayStats(playerOne);
       displayIslandStats();
-    }
+    } 
+  } else {
+    return;
   }
 }
 
@@ -361,13 +380,11 @@ function displayTotalFacilitiesPrice(price) {
 
 // Goods Transaction Panel
 function sellGoods(quantity) {
-  if (exporting) {
-    setTimeout(function() {
-      goodsTransaction(quantity, activeIslands.exportIsland);
-    }, calculateDeliveryTime(activeIslands.playerLocation, activeIslands.exportIsland));
-  } else {
-    goodsTransaction(quantity, activeIslands.playerLocation);
-  }
+  setTimeout(
+    function() {
+      goodsTransaction(quantity, activeIslands.importIsland);
+    }, calculateDeliveryTime(activeIslands.playerLocation, activeIslands.importIsland)
+  );
   displayStats(playerOne);
 }
 
@@ -425,12 +442,10 @@ function calculateGoodScarcity(island, type) {
 
 // Player Stat Panel Functions
 function displayStats(player) {
+  $('#location').text('Location: ' + activeIslands.playerLocation.islandName);
+
   _.each(Object.keys(player), function(stat) {
-    if (stat === 'location') {
-      $('#' + stat).text(stat + ': ' + player[stat].islandName);
-    } else {
-      $('#' + stat).text(stat + ': ' + player[stat])
-    }
+    $('#' + stat).text(stat + ': ' + player[stat])
   });
 }
 
@@ -485,7 +500,12 @@ function changeActiveIsland(island) {
   if (moving) {
     previous = activeIslands.playerLocation;
     activeIslands.playerLocation = island;
-  } else if (exporting) {
+  } else if (choosingImporter) {
+    previous = activeIslands.importIsland;
+    activeIslands.importIsland = island;
+  } else if (choosingExporter) {
+    //  check if island is valid exporter of anything
+    //  in sales function, check if island is valid exporter of that item
     previous = activeIslands.exportIsland;
     activeIslands.exportIsland = island;
   } else {
@@ -497,8 +517,9 @@ function changeActiveIsland(island) {
 }
 
 function highlightActiveIslands() {
-  $('#' + activeIslands.playerLocation.id).attr('class', 'island playerIsland');
-  $('#' + activeIslands.exportIsland.id).attr('class', 'island exportIsland');
   $('#' + activeIslands.selectedIsland.id).attr('class', 'island selectedIsland');
+  $('#' + activeIslands.exportIsland.id).attr('class', 'island exportIsland');
+  $('#' + activeIslands.importIsland.id).attr('class', 'island importIsland');
+  $('#' + activeIslands.playerLocation.id).attr('class', 'island playerIsland');
 }
 
