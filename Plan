@@ -24,12 +24,10 @@ NEXT:
 				- and make it neat code!
 		- exporting
 			- calculate distance between islands (use x/y coordinates and some handy trig)
-			- base delivery time on distance
-			- Selling and receiving islands are tracked
-				- if not exporting, receiving island is equal to player's location
-				- if exporting, receiving island is selected island (but stored in a separate variable... for now)
-				- for now selling island is always player's location
-				- distance/time calculations currently hidden--find room in island stat panel to display these (when exporting, or just always?... always while your start location is fixed. gets more complex when sale location changes. need to be able to look at 2 islands at once. One for 'operation' and one as the potential receiver. Blank panel when exporting is off filled with stats of selected islands when exporting is on. When exporting is off, selecting islands changes operating island, no receiving island exists.)
+			- base delivery time on distance √
+			- Selling and receiving islands are tracked √
+				- if not specified, receiving and selling islands are equal to player's location √
+				- distance/time calculations currently hidden--find room in island stat panel to display these (when exporting, or just always?)
 	Better:
 		- moving between islands, building on them
 			- 'move' button in selected island panel
