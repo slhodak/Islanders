@@ -30,12 +30,15 @@ NEXT:
 				- distance/time calculations currently hidden--find room in island stat panel to display these (when exporting, or just always?)
 	Better:
 		- moving between islands, building on them
-			- 'move' button in selected island panel
-			- time depends on distance again
+			- 'move' button in selected island panel √
+			- time depends on distance again √
 			- production based on either
 				- player is on that island
 				- player has industry of same type on that island
 		- populations growing logarithmically?
+
+	Even better:
+		- BC date counter instead of "Day: "
 
 	ISSUE:
 		Selection order too particular with goods/facilities buttons and fields

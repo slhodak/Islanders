@@ -31,8 +31,10 @@ For instance:
 
   wabam!
 -------------------
-  So you can sell things based on whether you are there or whether you have an industry of that type on the island
+  You can sell things to anyone but only from islands where you produce
+  You can only buy industries on playerLocation or islands where you have previously built in that industry
   More use of objects seems helpful here
-  
 
-  
+  When export is toggled on, you sell between import/export islands,
+    otherwise sales occur from and to playerLocation (if possible)
+
