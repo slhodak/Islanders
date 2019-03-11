@@ -19,11 +19,6 @@ p {
   background-color: wheat;
 }
 
-#islandDisplay {
-  grid-area: 1 / 8 / span 3 / span 3;
-  background-color: tan;
-}
-
 #map {
   height: 100%;
   width: 100%;
@@ -42,13 +37,32 @@ p {
   background-color: white;
 }
 
+#islandDisplay {
+  grid-area: 2 / 8 / span 2 / span 3;
+  background-color: tan;
+}
+
+.columnA {
+  display: inline-block;
+}
+
+.columnB {
+  display: inline-block;
+}
+
+
+#exportIslandDisplay {
+  grid-area: 4 / 8 / span 2 / span 3;
+  background-color: orange;
+}
+
 #sellGoods {
-  grid-area: 4 / 6 / span 1 / span 5;
+  grid-area: 4 / 6 / span 1 / span 2;
   background-color: gray;
 }
 
 #buyFacilities {
-  grid-area: 5 / 6 / span 1 / span 5;
+  grid-area: 5 / 6 / span 1 / span 2;
   background-color: maroon;
   color: gray;
 }
@@ -57,7 +71,7 @@ p {
   background-color: rgba(0, 0, 0, 0.1);
 }
 
-#gameClock {
+#clockAndPause {
   grid-area: 1 / 10 / span 1 / span 1;
   background-color: black;
   height: 100%;
@@ -68,12 +82,12 @@ p {
   grid-template: 1fr 1fr / 1fr 1fr;
 }
 
-#gameClock p {
+#clockAndPause p {
   grid-area: 1 / 1 / span 1 / span 2;
   color: white;
   font-size: 20px;
 }
 
-#gameClock button {
+#clockAndPause button {
   grid-area: 2 / 1 / span 1 / span 2;
 }

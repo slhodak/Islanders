@@ -2,9 +2,9 @@
 const $root = $('#root');
 const $map = $('<div></div>');
 const islandDensity = 20;
-let island = [];
+let islands = []
 let selectedIsland = undefined;
-let selectedIslandElement = undefined;
+let exportIsland = undefined;
 let goodsScarcity = 0;
 let facilityScarcity = 0;
 let goodsQuantity = 0;
@@ -19,7 +19,6 @@ let playerOne = {
     location: {}
 };
 let exporting = false;
-let receivingIsland = undefined;
 
 let paused = false;
 
@@ -77,16 +76,28 @@ $(document).ready(function() {
   let $selectedFacility = $('#selectedFacility');
 
   $('.island').on('mousedown', function(e) {
+    // if exporting and selectedisland, selection changes selected island and export island
+    // if exporting and no selectedisland, selection changes no previous
+    // export island is orange, supercedes selected island in green
+    // if not exporting, selection only changes selected island
+    // selection island is green
+    // previous island goes back to tan
+    var selectedIslandElement = undefined; 
+    if (selectedIsland) {
+      selectedIslandElement = $('#' + islands.indexOf(selectedIsland));
+    }
     if (selectedIsland !== playerOne.location) {
       $(selectedIslandElement).css('background-color', '');  
     } else {
       $(selectedIslandElement).css('background-color', 'maroon');
     }
     if (exporting) {
-      receivingIsland = islands[parseInt($(this).attr('id'))];
+      $(this).css('background-color', 'orange');
+      exportIsland = islands[parseInt($(this).attr('id'))];
+      displayIslandStats(selectedIsland);
+    } else {
+      $(this).css('background-color', 'green');  
     }
-    $(this).css('background-color', 'green');
-    selectedIslandElement = this;
     selectedIsland = islands[parseInt($(this).attr('id'))];
     displayIslandStats(selectedIsland);
   });
@@ -155,12 +166,12 @@ $(document).ready(function() {
       $(this).css('background-color', 'green');
     } else {
       $(this).css('background-color', '');
-      receivingIsland = playerOne.location;
+      exportIsland = playerOne.location;
     }
   });
 
-  $('#gameClock #hide').on('mousedown', function(e) {
-    $('#gameClock p').toggle();
+  $('#clockAndPause #hide').on('mousedown', function(e) {
+    $('#clockAndPause p').toggle();
   });
 
   gameLoop();
@@ -190,7 +201,7 @@ function togglePause() {
 }
 
 function updateClock(day) {
-  $('#gameClock #time').text('Day: ' + day);
+  $('#clockAndPause #time').text('Day: ' + day);
 }
 
 function facilityProduction() {
@@ -218,9 +229,15 @@ function islanderFacilityCreation(day) {
 
 // Island Stat Display Functions
 function displayIslandStats(island) {
-  _.each(Object.keys(island), function(key) {
-    $('#islandDisplay p#' + key).text(key + ': ' + island[key]);
-  });
+  if (exporting) {
+     _.each(Object.keys(exportIsland), function(key) {
+      $('#exportIslandDisplay p#' + key).text(key + ': ' + exportIsland[key]);
+    });
+  } else {
+    _.each(Object.keys(island), function(key) {
+      $('#islandDisplay p#' + key).text(key + ': ' + island[key]);
+    });
+  }
 }
 
 // Island Functions
@@ -367,13 +384,12 @@ function displayTotalFacilitiesPrice(price) {
 function sellGoods(quantity) {
   if (exporting) {
     setTimeout(function() {
-      goodsTransaction(quantity, receivingIsland);
-    }, calculateDeliveryTime(playerOne.location, receivingIsland));
+      goodsTransaction(quantity, exportIsland);
+    }, calculateDeliveryTime(playerOne.location, exportIsland));
   } else {
     goodsTransaction(quantity, playerOne.location);
   }
   displayStats(playerOne);
-  displayIslandStats(playerOne.location);
 }
 
 function goodsTransaction(quantity, receivingIsland) {

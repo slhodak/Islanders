@@ -32,15 +32,27 @@ NEXT:
 				- distance/time calculations currently hidden--find room in island stat panel to display these (when exporting, or just always?... always while your start location is fixed. gets more complex when sale location changes. need to be able to look at 2 islands at once. One for 'operation' and one as the potential receiver. Blank panel when exporting is off filled with stats of selected islands when exporting is on. When exporting is off, selecting islands changes operating island, no receiving island exists.)
 	Better:
 		- moving between islands, building on them
+			- 'move' button in selected island panel
+			- time depends on distance again
+			- production based on either
+				- player is on that island
+				- player has industry of same type on that island
 		- populations growing logarithmically?
 
 	ISSUE:
-		Gold from sales don't add up
+		Selection order too particular with goods/facilities buttons and fields
+		Exporting island too invisible... turn it orange until its changed (regardless of selected island... for instance if export button is off)
+		Gold from (especially domestic?) sales don't add up
 		Some variables which are global should be properties on island, probably
 		+ other Scope/refactoring things like this
 		I'm repeating myself
 		Craziness going on with facility scarcity variables and parameters
 
+
+Export Island vs Selected Island
+	- if exporting, selection moves export island and selected island
+	- if not exporting, selection only moves selected island
+	
 
 
 
