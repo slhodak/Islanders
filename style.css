@@ -8,10 +8,10 @@ p {
 
 #root {
   width: 1000px;
-  height: 1000px;
+  height: 500px;
   border: 20px ridge gray;
   display: grid;
-  grid-template: repeat(10, 1fr) / repeat(10, 1fr);
+  grid-template: repeat(5, 1fr) / repeat(10, 1fr);
 }
 
 #playerDisplay {
@@ -47,6 +47,10 @@ p {
 }
 
 .exportIsland {
+  background-color: turquoise;
+}
+
+.importIsland {
   background-color: orange;
 }
 
@@ -71,7 +75,7 @@ p {
   display: inline-block;
 }
 
-#exportIslandDisplay {
+#importIslandDisplay {
   grid-area: 4 / 8 / span 2 / span 3;
   background-color: orange;
 }
