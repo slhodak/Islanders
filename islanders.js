@@ -82,24 +82,38 @@ $(document).ready(function() {
     // if not exporting, selection only changes selected island
     // selection island is green
     // previous island goes back to tan
-    var selectedIslandElement = undefined; 
-    if (selectedIsland) {
-      selectedIslandElement = $('#' + islands.indexOf(selectedIsland));
-    }
-    if (selectedIsland !== playerOne.location) {
-      $(selectedIslandElement).css('background-color', '');  
-    } else {
-      $(selectedIslandElement).css('background-color', 'maroon');
-    }
-    if (exporting) {
-      $(this).css('background-color', 'orange');
+    var selectedIslandElement = undefined;
+
+    if (exporting && exportIsland) {
+      if (exportIsland === playerOne.location) {
+        $('#' + islands.indexOf(playerOne.location)).attr('class', 'island playerIsland');
+      }
+      $('#' + islands.indexOf(exportIsland)).attr('class', 'island');
+      $(this).attr('class', 'island exportIsland');
       exportIsland = islands[parseInt($(this).attr('id'))];
-      displayIslandStats(selectedIsland);
-    } else {
-      $(this).css('background-color', 'green');  
+      displayIslandStats(exportIsland);
     }
-    selectedIsland = islands[parseInt($(this).attr('id'))];
-    displayIslandStats(selectedIsland);
+    if (exporting && !exportIsland) {
+      $(this).attr('class', 'island exportIsland');
+      exportIsland = islands[parseInt($(this).attr('id'))];
+      displayIslandStats(exportIsland);
+    }
+    if (!exporting && selectedIsland) {
+      if (selectedIsland === playerOne.location) {
+        $('#' + islands.indexOf(playerOne.location)).attr('class', 'island playerIsland');
+      }
+      $('#' + islands.indexOf(selectedIsland)).attr('class', 'island');
+      $(this).attr('class', 'island selectedIsland');
+      selectedIsland = islands[parseInt($(this).attr('id'))];
+      displayIslandStats(selectedIsland);
+    }
+    if (!exporting && !selectedIsland) {
+      $(this).attr('class', 'island selectedIsland');
+      selectedIsland = islands[parseInt($(this).attr('id'))];
+      displayIslandStats(selectedIsland);
+    }
+
+
   });
 
   $('#goodsQuantity').on('change', function(e) {
@@ -163,10 +177,9 @@ $(document).ready(function() {
   $('#sellGoods #export').on('mousedown', function(e) {
     exporting = !exporting;
     if (exporting === true) {
-      $(this).css('background-color', 'green');
+      $(this).css('background-color', 'orange');
     } else {
       $(this).css('background-color', '');
-      exportIsland = playerOne.location;
     }
   });
 
@@ -174,6 +187,7 @@ $(document).ready(function() {
     $('#clockAndPause p').toggle();
   });
 
+  displayIslandStats(playerOne.location);
   gameLoop();
 });
 
@@ -187,9 +201,7 @@ function gameLoop() {
       islanderFacilityCreation(day);
       facilityProduction();
       displayStats(playerOne);
-      if (!selectedIsland) {
-        displayIslandStats(playerOne.location);
-      } else {
+      if (selectedIsland) {
         displayIslandStats(selectedIsland);  
       }
     }
@@ -229,13 +241,13 @@ function islanderFacilityCreation(day) {
 
 // Island Stat Display Functions
 function displayIslandStats(island) {
-  if (exporting) {
+  if (island === exportIsland) {
      _.each(Object.keys(exportIsland), function(key) {
       $('#exportIslandDisplay p#' + key).text(key + ': ' + exportIsland[key]);
     });
-  } else {
+  } else if (island === selectedIsland) {
     _.each(Object.keys(island), function(key) {
-      $('#islandDisplay p#' + key).text(key + ': ' + island[key]);
+      $('#selectedIslandDisplay p#' + key).text(key + ': ' + island[key]);
     });
   }
 }

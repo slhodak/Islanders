@@ -16,7 +16,8 @@ p {
 
 #playerDisplay {
   grid-area: 1 / 6 / span 3 / span 2;
-  background-color: wheat;
+  background-color: maroon;
+  color: white;
 }
 
 #map {
@@ -33,13 +34,33 @@ p {
   background-color: tan;
 }
 
-.island:hover {
-  background-color: white;
+.island::after {
+  display: block;
+  content: "";
+  height: 16px;
+  width: 16px;
+  background-color: rgba(0, 0, 0, 0);
 }
 
-#islandDisplay {
+.island:hover::after {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.exportIsland {
+  background-color: orange;
+}
+
+.playerIsland {
+  background-color: maroon;
+}
+
+.selectedIsland {
+  background-color: green;
+}
+
+#selectedIslandDisplay {
   grid-area: 2 / 8 / span 2 / span 3;
-  background-color: tan;
+  background-color: lightgreen;
 }
 
 .columnA {
@@ -49,7 +70,6 @@ p {
 .columnB {
   display: inline-block;
 }
-
 
 #exportIslandDisplay {
   grid-area: 4 / 8 / span 2 / span 3;
