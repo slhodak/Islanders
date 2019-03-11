@@ -12,7 +12,10 @@ let activeIslands = {
 };
 let choosingExporter = false;
 let choosingImporter = false;
-let moving = false;
+let choosingPlayerTravel = false;
+let traveling = false;
+let timerId = 0;
+
 
 let goodsScarcity = 0;
 let facilityScarcity = 0;
@@ -90,6 +93,46 @@ $(document).ready(function() {
     changeActiveIsland(thisIsland);
   });
 
+  $('#travel').on('mousedown', function(e) {
+    if (traveling === false) {
+      choosingPlayerTravel = true;
+      traveling = !traveling;
+      travelTo(activeIslands.selectedIsland);
+      if (traveling) {
+        $(this).attr('class', 'traveling');
+          $('#travel').text('traveling.');
+          setTimeout(function() {
+            if (traveling) {
+              $('#travel').text('traveling..');
+            }
+          }, 1000);
+          setTimeout(function() {
+            if (traveling) {
+              $('#travel').text('traveling...');
+            }
+          }, 2000);
+        timerId = setInterval(function() {
+          if (traveling) {
+            $('#travel').text('traveling.');
+          }
+          setTimeout(function() {
+            if (traveling) {
+              $('#travel').text('traveling..');
+            }
+          }, 1000);
+          setTimeout(function() {
+            if (traveling) {
+              $('#travel').text('traveling...');
+            }
+          }, 2000);
+        }, 3000); 
+      }
+    }
+  });
+    
+    //  create 'in transit' display, (change button to clicked-in, 'traveling...')
+    //  setTimeout for change of playerLocation
+    //  playerLocation becomes... new island, but 'traveling' blocker var = true
   $('#goodsQuantity').on('change', function(e) {
     goodsQuantity = this.value;
     trackGoodsQuantity(goodsQuantity, goodsScarcity);
@@ -227,6 +270,16 @@ function islanderFacilityCreation(day) {
     });
     displayIslandStats();
   }
+}
+
+function travelTo() {
+  setTimeout(function() {
+    traveling = false;
+    $('#travel').attr('class', '');
+    $('#travel').text('Travel to');
+  }, calculateDeliveryTime(activeIslands.playerLocation, activeIslands.selectedIsland));
+  changeActiveIsland(activeIslands.selectedIsland);
+  choosingPlayerTravel = false;
 }
 
 // Island Stat Display Functions
@@ -442,8 +495,11 @@ function calculateGoodScarcity(island, type) {
 
 // Player Stat Panel Functions
 function displayStats(player) {
-  $('#location').text('Location: ' + activeIslands.playerLocation.islandName);
-
+  if (traveling) {
+    $('#location').text('Location: traveling to ' + activeIslands.playerLocation.islandName) ;
+  } else {
+    $('#location').text('Location: ' + activeIslands.playerLocation.islandName);
+  }
   _.each(Object.keys(player), function(stat) {
     $('#' + stat).text(stat + ': ' + player[stat])
   });
@@ -497,7 +553,7 @@ function nonRepeatingRandomIntArrayInRange(many, range) {
 
 function changeActiveIsland(island) {
   var previous = {};
-  if (moving) {
+  if (choosingPlayerTravel) {
     previous = activeIslands.playerLocation;
     activeIslands.playerLocation = island;
   } else if (choosingImporter) {

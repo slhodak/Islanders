@@ -67,6 +67,11 @@ p {
   background-color: lightgreen;
 }
 
+.traveling {
+  background-color: maroon;
+  color: white;
+}
+
 .columnA {
   display: inline-block;
 }
