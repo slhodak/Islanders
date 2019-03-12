@@ -20,10 +20,10 @@ let timerId = 0;
 
 let selections = {
   selectedFacility: undefined,
-  selectedFacilityType: '',
+  selectedFacilityType: 'mines',
   facilityQuantity: 0,
   selectedGood: undefined,
-  selectedGoodType: '',
+  selectedGoodType: 'copper',
   goodsQuantity: 0,
   exporting: false
 }
@@ -435,20 +435,26 @@ function calculateDeliveryTime(seller, buyer) {
   return 1000 * Math.floor(math.distance(seller.coordinates, buyer.coordinates));
 }
 
-function logGoodsPrice(goodsQuantity, goodsScarcity) {
-  if (goodsQuantity < 1) {
+function logGoodsPrice(quantity, scarcity) {
+  if (quantity < 1) {
     return 0;
-  } else if (goodsQuantity === 1) {
+  } else if (quantity === 1) {
     return logGoodsPrice(2);
   } else {
-    return  (goodsScarcity * 100) * (1 / Math.log(goodsQuantity + 2));
+    return  (scarcity * 100) * (1 / Math.log(quantity + 2));
   }
 }
 
-function updateGoodsPurchasePanel(goodsQuantity, goodScarcity) {
-  var pricePerGood = logGoodsPrice(goodsQuantity, goodScarcity);
+function updateGoodsPurchasePanel() {
+  let $quantityDisplay = $('#goodsQuantity');
+  $quantityDisplay.attr('max', selections.selectedGood.player);
+  if (parseInt($quantityDisplay.val()) > selections.selectedGood.player) {
+    selections.goodsQuantity = selections.selectedGood.player
+    $quantityDisplay.val(selections.selectedFacility.maximum);
+  }
+  var pricePerGood = logGoodsPrice(selections.selectedGood.player, selections.selectedGood.scarcity);
   displayPricePerGood(pricePerGood);
-  displayTotalGoodsPrice(pricePerGood * goodsQuantity);
+  displayTotalGoodsPrice(pricePerGood * selections.goodsQuantity);
 }
 
 function displayPricePerGood(price) {
@@ -496,6 +502,7 @@ function updateFacilityPurchasePanel() {
   let $quantityDisplay = $('#facilitiesQuantity');
   $quantityDisplay.attr('max', selections.selectedFacility.maximum - selections.selectedFacility.total);
   if (parseInt($quantityDisplay.val()) > selections.selectedFacility.maximum) {
+    selections.facilityQuantity = selections.selectedFacility.maximum;
     $quantityDisplay.val(selections.selectedFacility.maximum);
   }
   var pricePerFacility = exponentialFacilitesPrice();
