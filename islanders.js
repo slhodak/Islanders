@@ -198,11 +198,13 @@ $(document).ready(function() {
       $(this).removeClass('notExporting');
       $(this).addClass('exporting');
       $(this).text('Exporting');
+      selections.selectedGood = activeIslands.exportIsland[selections.selectedGoodType];
     } else {
       $(this).removeClass('exporting');
       $(this).addClass('notExporting');
       $(this).text('Not exporting');
     }
+    updateGoodsPurchasePanel();
   });
 
   //  Facilities UI
@@ -413,22 +415,25 @@ function randomEnvironment() {
 }
 
 // Goods Transaction Panel
-function sellGoods(quantity) {
+function sellGoods() {
+  let buyer = activeIslands.playerLocation;
+  let seller = activeIslands.playerLocation;
+  if (selections.exporting) {
+    buyer = activeIslands.importIsland;
+    seller = activeIslands.exportIsland;
+  }
   setTimeout(
     function() {
-      goodsTransaction();
-    }, calculateDeliveryTime(activeIslands.exportIsland, activeIslands.importIsland)
+      goodsTransaction(buyer);
+    }, calculateDeliveryTime(seller, buyer)
   );
   updatePlayerStatPanel();
 }
 
-function goodsTransaction() {
+function goodsTransaction(buyer) {
   selections.selectedGood -= selections.goodsQuantity;
+  //  buying island's nonplayer quantity grows so scarcity can react  
   player.totalGold += logGoodsPrice(selections.goodsQuantity, selections.selectedGood.scarcity);
-}
-
-function calculateDeliveryTime(seller, buyer) {
-  return 1000 * Math.floor(math.distance(seller.coordinates, buyer.coordinates));
 }
 
 function logGoodsPrice(quantity, scarcity) {
@@ -441,12 +446,20 @@ function logGoodsPrice(quantity, scarcity) {
   }
 }
 
+function calculateGoodScarcity(population, terrain, production) {
+  return Math.round(Math.log(population * (1 / terrain) * (1 / production)));
+}
+
+function calculateDeliveryTime(seller, buyer) {
+  return 1000 * Math.floor(math.distance(seller.coordinates, buyer.coordinates));
+}
+
 function updateGoodsPurchasePanel() {
   let $quantityDisplay = $('#goodsQuantity');
   $quantityDisplay.attr('max', selections.selectedGood.player);
   if (parseInt($quantityDisplay.val()) > selections.selectedGood.player) {
     selections.goodsQuantity = selections.selectedGood.player
-    $quantityDisplay.val(selections.selectedFacility.maximum);
+    $quantityDisplay.val(selections.selectedGood.player);
   }
   var pricePerGood = logGoodsPrice(selections.selectedGood.player, selections.selectedGood.scarcity);
   displayPricePerGood(pricePerGood);
@@ -459,10 +472,6 @@ function displayPricePerGood(price) {
 
 function displayTotalGoodsPrice(price) {
   $('#totalGoodsPrice').text(price.toString());
-}
-
-function calculateGoodScarcity(population, terrain, production) {
-  return Math.round(Math.log(population * (1 / terrain) * (1 / production)));
 }
 
 // Facilities Transaction Panel
@@ -576,8 +585,7 @@ function changeActiveIsland(island) {
     previous = activeIslands.importIsland;
     activeIslands.importIsland = island;
   } else if (choosingExporter) {
-    //  check if island is valid exporter of anything
-    //  in sales function, check if island is valid exporter of that item
+    //  check if island is valid exporter
     previous = activeIslands.exportIsland;
     activeIslands.exportIsland = island;
   } else {
