@@ -282,15 +282,13 @@ function playerFacilityOutput() {
 }
 
 function islanderFacilityCreation(day) {
-  if (day % 50 === 0) {
+  if (day % 10 === 0) {
     _.each(islands, function(island) {
-      if (island.groves + island.groves.player < island.groves.maximum) {
-        island.groves += 1;
-        island.oliveOilScarcity = calculateGoodScarcity(island, 'oliveOil');
+      if (island.oliveOil.groves.total < island.oliveOil.groves.maximum) {
+        island.oliveOil.groves.nonplayer += 1;
       }
-      if (island.mines + island.mines.player < island.mines.maximum) {
-        island.mines += 1;
-        island.copperScarcity = calculateGoodScarcity(island, 'copper');
+      if (island.copper.mines.total < island.copper.mines.maximum) {
+        island.copper.mines.nonplayer += 1;
       }
     });
     displayIslandStats();
@@ -303,8 +301,9 @@ function travelTo() {
     $('#travel').attr('class', '');
     $('#travel').text('Travel to');
   }, calculateDeliveryTime(activeIslands.playerLocation, activeIslands.selectedIsland));
-  changeActiveIsland(activeIslands.selectedIsland);
   choosingPlayerTravel = false;
+  changeActiveIsland(activeIslands.selectedIsland);
+  updatePlayerStatPanel();
 }
 
 // Island Stat Display Functions
