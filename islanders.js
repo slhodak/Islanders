@@ -18,14 +18,13 @@ let timerId = 0;
 
 let selections = {
   selectedFacility: undefined,
+  selectedFacilityType: '',
   facilityQuantity: 0,
   selectedGood: undefined,
   goodsQuantity: 0,
   exporting: false
 }
 
-let goodsScarcity = 0;
-let facilityScarcity = 0;
 let playerOne = {
     myName: 'Sam',
     totalGroves: 0,
@@ -95,6 +94,12 @@ $(document).ready(function() {
   $('.island').on('mousedown', function(e) {
     var thisIsland = islands[parseInt($(this).attr('id'))];
     changeActiveIsland(thisIsland);
+    if (selections.selectedFacilityType === 'mines') {
+      selections.selectedFacility = thisIsland.copper.mines;
+    } else {
+      selections.selectedFacility = thisIsland.oliveOil.groves;
+    }
+    updateFacilityPurchasePanel();
   });
 
   $('#travel').on('mousedown', function(e) {
@@ -142,13 +147,10 @@ $(document).ready(function() {
   $('#sellGoods #copper').on('mousedown', function(e) {
     $('#sellGoods #oliveOil').removeClass('sellingOliveOil');
     $(this).addClass('sellingCopper');
-    // this shared scarcity / quantity variable is no good
-    goodsScarcity = activeIslands.selectedIsland.copperScarcity; 
+    // depends on exporting or not!
+    selections.selectedGood = activeIslands.selectedIsland.oliveOil; 
     // send all change selections logic to a function that adjusts relevant numbers/maxes
     // have this affect eligibility but keep that logic close to the sale/purchase functions
-    
-    // stop using strings for this--send the selectedIsland's copper.player value, use that
-    selections.selectedGood = 'copper';
 
     $('#sellGoods #goodsQuantity').attr('max', activeIslands.playerLocation.copper.player);
     trackGoodsQuantity();
@@ -157,8 +159,8 @@ $(document).ready(function() {
   $('#sellGoods #oliveOil').on('mousedown', function(e) {
     $('#sellGoods #copper').removeClass('sellingCopper');
     $(this).addClass('sellingOliveOil');
-    goodsScarcity = activeIslands.selectedIsland.oliveOilScarcity;
-    selections.selectedGood = 'oliveOil';
+   
+    selections.selectedGood = activeIslands.selectedIsland.copper;
     $('#sellGoods #goodsQuantity').attr('max', activeIslands.playerLocation.oliveOil.player);
     trackGoodsQuantity();
   });
@@ -171,7 +173,7 @@ $(document).ready(function() {
   $('#buyFacilities #mines').on('mousedown', function(e) {
     $('#buyFacilities #groves').removeClass('buyingGroves');
     $(this).addClass('buyingMines');
-    $('#facilitiesQuantity').attr('max', activeIslands.selectedIsland.copper.mines.maximum - activeIslands.selectedIsland.copper.mines - activeIslands.selectedIsland.copper.mines.player);
+    selections.selectedFacilityType = 'mines';
     selections.selectedFacility = activeIslands.selectedIsland.copper.mines;
     updateFacilityPurchasePanel();
   });
@@ -179,7 +181,7 @@ $(document).ready(function() {
   $('#buyFacilities #groves').on('mousedown', function(e) {
     $('#buyFacilities #mines').removeClass('buyingMines');
     $(this).addClass('buyingGroves');
-    $('#facilitiesQuantity').attr('max', activeIslands.selectedIsland.groves.maximum - activeIslands.selectedIsland.groves - activeIslands.selectedIsland.groves.player);
+    selections.selectedFacilityType = 'groves';
     selections.selectedFacility = activeIslands.selectedIsland.oliveOil.groves;
     updateFacilityPurchasePanel();
   });
@@ -430,6 +432,11 @@ function calculateFacilityScarcity(population, terrain, maximum, total) {
 
 function updateFacilityPurchasePanel() {
   // find price and display consequences
+  let $quantityDisplay = $('#facilitiesQuantity');
+  $quantityDisplay.attr('max', selections.selectedFacility.maximum - selections.selectedFacility.total);
+  if (parseInt($quantityDisplay.val()) > selections.selectedFacility.maximum) {
+    $quantityDisplay.val(selections.selectedFacility.maximum);
+  }
   var pricePerFacility = exponentialFacilitesPrice();
   displayPricePerFacility(pricePerFacility);
   displayTotalFacilitiesPrice(pricePerFacility * selections.facilityQuantity);
