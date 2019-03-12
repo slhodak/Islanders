@@ -35,12 +35,14 @@ NEXT:
 			- production based on either
 				- player is on that island
 				- player has industry of same type on that island
+		- populations consuming goods bought, scarcity reacts with negative spike and rise return
 		- populations growing logarithmically?
 
 	Even better:
 		- BC date counter instead of "Day: "
 
 	ISSUE:
+		Infinity scarcity!
 		Selection order too particular with goods/facilities buttons and fields
 		Exporting island too invisible... turn it orange until its changed (regardless of selected island... for instance if export button is off)
 		Gold from (especially domestic?) sales don't add up
