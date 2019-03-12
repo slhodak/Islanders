@@ -149,11 +149,11 @@ $(document).ready(function() {
     $('#sellGoods #oliveOil').removeClass('sellingOliveOil');
     $(this).addClass('sellingCopper');
     // depends on exporting or not!
-    selections.selectedGood = activeIslands.currentSeller.oliveOil;
+    selections.selectedGood = activeIslands.currentSeller.copper;
     // send all change selections logic to a function that adjusts relevant numbers/maxes
     // have this affect eligibility but keep that logic close to the sale/purchase functions
 
-    $('#sellGoods #goodsQuantity').attr('max', activeIslands.currentSeller.oliveOil.player);
+    $('#sellGoods #goodsQuantity').attr('max', activeIslands.currentSeller.copper.player);
     updateGoodsPurchasePanel();
   });
 
@@ -161,12 +161,13 @@ $(document).ready(function() {
     $('#sellGoods #copper').removeClass('sellingCopper');
     $(this).addClass('sellingOliveOil');
    
-    selections.selectedGood = activeIslands.exportIsland.copper;
-    $('#sellGoods #goodsQuantity').attr('max', activeIslands.exportIsland.copper.player);
+    selections.selectedGood = activeIslands.exportIsland.oliveOil;
+    $('#sellGoods #goodsQuantity').attr('max', activeIslands.exportIsland.oliveOil.player);
     updateGoodsPurchasePanel();
   });
+
     $('#sellGoods #sell').on('mousedown', function(e) {
-    sellGoods(parseInt($('#sellGoods #goodsQuantity').val()));
+    sellGoods();
   });
 
   $('#sellGoods #importer').on('mousedown', function(e) {
@@ -371,28 +372,29 @@ function generateIslandStats(nameFunction, id) {
   island.copper = {
     player: 0,
     nonplayer: 0,
-    scarcity: calculateGoodScarcity(island, 'copper'),
     mines: {}
   };
-  island.copper.mines.player = 0;
-  island.copper.mines.nonplayer = 0;
   island.copper.mines.maximum = Math.floor(island.rocky / 10);
+  island.copper.mines.player = 0;
+  island.copper.mines.nonplayer = Math.floor(island.copper.mines.maximum / 4);
   island.copper.mines.total = island.copper.mines.player + island.copper.mines.nonplayer;
   island.copper.mines.scarcity = calculateFacilityScarcity(island.population, island.rocky, island.copper.mines.maximum, island.copper.mines.total);
-  island.copper.mines.nonplayer += Math.floor(island.copper.mines.maximum / 4);
+  island.copper.scarcity = calculateGoodScarcity(island.population, island.rocky, island.copper.mines.total);
 
   island.oliveOil = {
     player: 0,
     nonplayer: 0,
-    scarcity: calculateGoodScarcity(island, 'oliveOil'),
     groves: {}
   };
-  island.oliveOil.groves.player = 0;
-  island.oliveOil.groves.nonplayer = 0;
   island.oliveOil.groves.maximum = Math.floor(island.lush / 10);
+  island.oliveOil.groves.player = 0;
+  island.oliveOil.groves.nonplayer = Math.floor(island.oliveOil.groves.maximum / 4);
   island.oliveOil.groves.total = island.oliveOil.groves.player + island.oliveOil.groves.nonplayer;
   island.oliveOil.groves.scarcity = calculateFacilityScarcity(island.population, island.lush, island.oliveOil.groves.maximum, island.oliveOil.groves.total);
-  island.oliveOil.groves.nonplayer += Math.floor(island.oliveOil.groves.maximum / 4);
+  //  goods scarcity also has to be a function of how much the nonplayers have
+  //  (which they consume back to 0 when player sells them more--
+  //  assumption is they produce only the minimum of what they need but player is selling luxury)
+  island.oliveOil.scarcity = calculateGoodScarcity(island.population, island.lush, island.oliveOil.groves.total)
 
   return island;
 }
@@ -414,21 +416,15 @@ function randomEnvironment() {
 function sellGoods(quantity) {
   setTimeout(
     function() {
-      goodsTransaction(quantity, activeIslands.importIsland);
+      goodsTransaction();
     }, calculateDeliveryTime(activeIslands.exportIsland, activeIslands.importIsland)
   );
   updatePlayerStatPanel();
 }
 
-function goodsTransaction(quantity, receivingIsland) {
-  // if (selectedGood === 'copper') {
-  //   activeIslands.playerLocation.copper.player -= quantity;
-  //   player.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'copper'));
-  // } else {
-  //   activeIslands.playerLocation.oliveOil.player -= quantity;
-  //   player.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'oliveOil'))
-  // }
-
+function goodsTransaction() {
+  selections.selectedGood -= selections.goodsQuantity;
+  player.totalGold += logGoodsPrice(selections.goodsQuantity, selections.selectedGood.scarcity);
 }
 
 function calculateDeliveryTime(seller, buyer) {
@@ -465,18 +461,8 @@ function displayTotalGoodsPrice(price) {
   $('#totalGoodsPrice').text(price.toString());
 }
 
-function calculateGoodScarcity(island, type) {
-  let terrain = '';
-  let production = '';
-  if (type === 'copper') {
-    terrain = island.rocky || 0.1; 
-    production = island.mines || 0.1;
-  } else {
-    terrain = island.lush || 0.1; 
-    production = island.groves || 0.1;
-  }
-
-  return Math.round(Math.log(island.population * (1 / terrain) * (1 / production)));
+function calculateGoodScarcity(population, terrain, production) {
+  return Math.round(Math.log(population * (1 / terrain) * (1 / production)));
 }
 
 // Facilities Transaction Panel
