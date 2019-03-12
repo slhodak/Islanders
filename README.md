@@ -7,7 +7,7 @@ Economic trading game inspired by the ancient Mediterranean.
 
 Player can build groves and mines on islands to produce copper and olive oil, and sell both for gold.
 
-Price is inversely proportional to on an island's scarcity rating for a given product.
+Price is inversely proportional to an island's scarcity rating for a given product.
 Scarcity is determined by the population of an island and its productive capacity for the product.
 Islands each have a maximum number of possible groves and mines based on their lushness and rockiness.
 Over time, islanders build their own groves and mines, causing scarcity to for all products decrease.
