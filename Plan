@@ -42,6 +42,9 @@ NEXT:
 		- BC date counter instead of "Day: "
 
 	ISSUE:
+		ISLAND CREATION:
+			Object literals cannot refer to their own properties in the dynamic sort of way that I am trying to 
+			implement for the island stat generation function. Use getters or create objects from constructors.
 		Infinity scarcity!
 		Selection order too particular with goods/facilities buttons and fields
 		Exporting island too invisible... turn it orange until its changed (regardless of selected island... for instance if export button is off)
