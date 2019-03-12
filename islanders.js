@@ -21,12 +21,12 @@ let selections = {
   selectedFacilityType: '',
   facilityQuantity: 0,
   selectedGood: undefined,
+  selectedGoodType: '',
   goodsQuantity: 0,
   exporting: false
 }
 
-let playerOne = {
-    myName: 'Sam',
+let player = {
     totalGroves: 0,
     totalMines: 0,
     totalGold: 1000
@@ -82,14 +82,14 @@ $(document).ready(function() {
   activeIslands.exportIsland = activeIslands.playerLocation;
   activeIslands.importIsland = activeIslands.playerLocation;
 
-  selections.selectedFacility = activeIslands.playerLocation.copper.mines.player;
-  selections.selectedGood = activeIslands.playerLocation.copper.player;
+  selections.selectedFacility = activeIslands.playerLocation.copper.mines;
+  selections.selectedGood = activeIslands.playerLocation.copper;
 
   plotAllIslands($map, islands);
 
   highlightActiveIslands();
   
-  displayStats(playerOne);
+  updatePlayerStatPanel();
 
   $('.island').on('mousedown', function(e) {
     var thisIsland = islands[parseInt($(this).attr('id'))];
@@ -166,7 +166,7 @@ $(document).ready(function() {
   });
 
   $('#facilitiesQuantity').on('change', function(e) {
-    selections.facilityQuantity = this.value;
+    selections.facilityQuantity = parseInt(this.value);
     updateFacilityPurchasePanel();
   });
 
@@ -187,7 +187,7 @@ $(document).ready(function() {
   });
 
   $('#buyFacilities #buy').on('mousedown', function(e) {
-    purchaseFacilities(parseInt($('#buyFacilities #facilitiesQuantity').val()));
+    purchaseFacilities();
   });
 
   $('#sellGoods #sell').on('mousedown', function(e) {
@@ -260,7 +260,7 @@ function gameLoop() {
       updateClock(day);
       islanderFacilityCreation(day);
       playerFacilityOutput();
-      displayStats(playerOne);
+      updatePlayerStatPanel();
       displayIslandStats();  
     }
   }, 1000);
@@ -375,9 +375,11 @@ function generateIslandStats(nameFunction, id) {
     mines: {}
   };
   island.copper.mines.player = 0;
+  island.copper.mines.nonplayer = 0;
   island.copper.mines.maximum = Math.floor(island.rocky / 10);
-  island.copper.mines.total = Math.floor(island.copper.mines.maximum / 4);
+  island.copper.mines.total = island.copper.mines.player + island.copper.mines.nonplayer;
   island.copper.mines.scarcity = calculateFacilityScarcity(island.population, island.rocky, island.copper.mines.maximum, island.copper.mines.total);
+  island.copper.mines.nonplayer += Math.floor(island.copper.mines.maximum / 4);
 
   island.oliveOil = {
     player: 0,
@@ -386,9 +388,11 @@ function generateIslandStats(nameFunction, id) {
     groves: {}
   };
   island.oliveOil.groves.player = 0;
+  island.oliveOil.groves.nonplayer = 0;
   island.oliveOil.groves.maximum = Math.floor(island.lush / 10);
-  island.oliveOil.groves.total = Math.floor(island.oliveOil.groves.maximum / 4);
+  island.oliveOil.groves.total = island.oliveOil.groves.player + island.oliveOil.groves.nonplayer;
   island.oliveOil.groves.scarcity = calculateFacilityScarcity(island.population, island.lush, island.oliveOil.groves.maximum, island.oliveOil.groves.total);
+  island.oliveOil.groves.nonplayer += Math.floor(island.oliveOil.groves.maximum / 4);
 
   return island;
 }
@@ -407,20 +411,15 @@ function randomEnvironment() {
 }
 
 // Facilities Transaction Panel
-// cheaper to build on islands with more lush or rock and more population
-//    most expensive place to build is less land and small population
-//    highest price to sell is less land and small population -- these would be importers
 function purchaseFacilities() {
   let cost = selections.facilityQuantity * exponentialFacilitesPrice(selections.facilityQuantity, selections.selectedFacility.scarcity);
-  if (playerOne.totalGold > cost) {
-    if (activeIslands.playerLocation === activeIslands.selectedIsland) {
-      selection.selectedFacility += selection.facilityQuantity
-      selectedIsland.selectedFacility.total += selectedIsland.mines + selectedIsland.mines.player;
-      selectedIsland.copperScarcity = calculateGoodScarcity(selectedIsland, 'copper');
-    } else if (selection.selectedFacility > 0) {
-      selection.selectedFacility += selection.facilityQuantity;
-    } else if (selection.selectedFacility > 0) {
-
+  if (player.totalGold > cost) {
+    if (activeIslands.playerLocation === activeIslands.selectedIsland || selections.selectedFacility.player > 0) {
+      selections.selectedFacility.player += selections.facilityQuantity;
+      //  update player stats
+      //  update displays
+      player.totalGold -= cost;
+      updatePlayerStatPanel();
     }
   }
 }
@@ -465,16 +464,16 @@ function sellGoods(quantity) {
       goodsTransaction(quantity, activeIslands.importIsland);
     }, calculateDeliveryTime(activeIslands.playerLocation, activeIslands.importIsland)
   );
-  displayStats(playerOne);
+  updatePlayerStatPanel();
 }
 
 function goodsTransaction(quantity, receivingIsland) {
   if (selectedGood === 'copper') {
     activeIslands.playerLocation.copper.player -= quantity;
-    playerOne.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'copper'));
+    player.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'copper'));
   } else {
     activeIslands.playerLocation.oliveOil.player -= quantity;
-    playerOne.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'oliveOil'))
+    player.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'oliveOil'))
   }
 }
 
@@ -521,7 +520,7 @@ function calculateGoodScarcity(island, type) {
 }
 
 // Player Stat Panel Functions
-function displayStats(player) {
+function updatePlayerStatPanel() {
   if (traveling) {
     $('#location').text('Location: traveling to ' + activeIslands.playerLocation.islandName) ;
   } else {
