@@ -8,6 +8,8 @@ let activeIslands = {
   playerLocation: undefined,
   exportIsland: undefined,
   importIsland: undefined,
+  currentSeller: undefined,
+  currentBuyer: undefined,
   selectedIsland: undefined
 };
 let choosingExporter = false;
@@ -77,18 +79,16 @@ $(document).ready(function() {
   $root.append($map);
 
   islands = generateAllIslands(islandDensity);
-  activeIslands.playerLocation = islands[Math.floor(Math.random() * (islandDensity - 1))];
-  activeIslands.selectedIsland = activeIslands.playerLocation;
-  activeIslands.exportIsland = activeIslands.playerLocation;
-  activeIslands.importIsland = activeIslands.playerLocation;
+  let startIsland = islands[Math.floor(Math.random() * (islandDensity - 1))];
+  _.each(Object.keys(activeIslands), function(key) {
+    activeIslands[key] = startIsland;
+  });
 
   selections.selectedFacility = activeIslands.playerLocation.copper.mines;
   selections.selectedGood = activeIslands.playerLocation.copper;
 
   plotAllIslands($map, islands);
-
   highlightActiveIslands();
-  
   updatePlayerStatPanel();
 
   $('.island').on('mousedown', function(e) {
@@ -139,58 +139,33 @@ $(document).ready(function() {
     }
   });
 
+  //  Goods UI
   $('#goodsQuantity').on('change', function(e) {
-    selections.goodsQuantity = this.value;
-    trackGoodsQuantity();
+    selections.goodsQuantity = parseInt(this.value);
+    updateGoodsPurchasePanel();
   });
 
   $('#sellGoods #copper').on('mousedown', function(e) {
     $('#sellGoods #oliveOil').removeClass('sellingOliveOil');
     $(this).addClass('sellingCopper');
     // depends on exporting or not!
-    selections.selectedGood = activeIslands.selectedIsland.oliveOil; 
+    selections.selectedGood = activeIslands.currentSeller.oliveOil;
     // send all change selections logic to a function that adjusts relevant numbers/maxes
     // have this affect eligibility but keep that logic close to the sale/purchase functions
 
-    $('#sellGoods #goodsQuantity').attr('max', activeIslands.playerLocation.copper.player);
-    trackGoodsQuantity();
+    $('#sellGoods #goodsQuantity').attr('max', activeIslands.currentSeller.oliveOil.player);
+    updateGoodsPurchasePanel();
   });
 
   $('#sellGoods #oliveOil').on('mousedown', function(e) {
     $('#sellGoods #copper').removeClass('sellingCopper');
     $(this).addClass('sellingOliveOil');
    
-    selections.selectedGood = activeIslands.selectedIsland.copper;
-    $('#sellGoods #goodsQuantity').attr('max', activeIslands.playerLocation.oliveOil.player);
-    trackGoodsQuantity();
+    selections.selectedGood = activeIslands.exportIsland.copper;
+    $('#sellGoods #goodsQuantity').attr('max', activeIslands.exportIsland.copper.player);
+    updateGoodsPurchasePanel();
   });
-
-  $('#facilitiesQuantity').on('change', function(e) {
-    selections.facilityQuantity = parseInt(this.value);
-    updateFacilityPurchasePanel();
-  });
-
-  $('#buyFacilities #mines').on('mousedown', function(e) {
-    $('#buyFacilities #groves').removeClass('buyingGroves');
-    $(this).addClass('buyingMines');
-    selections.selectedFacilityType = 'mines';
-    selections.selectedFacility = activeIslands.selectedIsland.copper.mines;
-    updateFacilityPurchasePanel();
-  });
-
-  $('#buyFacilities #groves').on('mousedown', function(e) {
-    $('#buyFacilities #mines').removeClass('buyingMines');
-    $(this).addClass('buyingGroves');
-    selections.selectedFacilityType = 'groves';
-    selections.selectedFacility = activeIslands.selectedIsland.oliveOil.groves;
-    updateFacilityPurchasePanel();
-  });
-
-  $('#buyFacilities #buy').on('mousedown', function(e) {
-    purchaseFacilities();
-  });
-
-  $('#sellGoods #sell').on('mousedown', function(e) {
+    $('#sellGoods #sell').on('mousedown', function(e) {
     sellGoods(parseInt($('#sellGoods #goodsQuantity').val()));
   });
 
@@ -229,6 +204,32 @@ $(document).ready(function() {
     }
   });
 
+  //  Facilities UI
+  $('#facilitiesQuantity').on('change', function(e) {
+    selections.facilityQuantity = parseInt(this.value);
+    updateFacilityPurchasePanel();
+  });
+
+  $('#buyFacilities #mines').on('mousedown', function(e) {
+    $('#buyFacilities #groves').removeClass('buyingGroves');
+    $(this).addClass('buyingMines');
+    selections.selectedFacilityType = 'mines';
+    selections.selectedFacility = activeIslands.selectedIsland.copper.mines;
+    updateFacilityPurchasePanel();
+  });
+
+  $('#buyFacilities #groves').on('mousedown', function(e) {
+    $('#buyFacilities #mines').removeClass('buyingMines');
+    $(this).addClass('buyingGroves');
+    selections.selectedFacilityType = 'groves';
+    selections.selectedFacility = activeIslands.selectedIsland.oliveOil.groves;
+    updateFacilityPurchasePanel();
+  });
+
+  $('#buyFacilities #buy').on('mousedown', function(e) {
+    purchaseFacilities();
+  });
+
   $('#clockAndPause #hide').on('mousedown', function(e) {
     $('#clockAndPause p').toggle();
   });
@@ -242,7 +243,7 @@ $(document).ready(function() {
     }
   })
 
-  displayIslandStats();
+  updateIslandStatPanels();
   gameLoop();
 });
 
@@ -261,7 +262,7 @@ function gameLoop() {
       islanderFacilityCreation(day);
       playerFacilityOutput();
       updatePlayerStatPanel();
-      displayIslandStats();  
+      updateIslandStatPanels();  
     }
   }, 1000);
 }
@@ -282,7 +283,7 @@ function playerFacilityOutput() {
 }
 
 function islanderFacilityCreation(day) {
-  if (day % 10 === 0) {
+  if (day % 50 === 0) {
     _.each(islands, function(island) {
       if (island.oliveOil.groves.total < island.oliveOil.groves.maximum) {
         island.oliveOil.groves.nonplayer += 1;
@@ -291,7 +292,7 @@ function islanderFacilityCreation(day) {
         island.copper.mines.nonplayer += 1;
       }
     });
-    displayIslandStats();
+    updateIslandStatPanels();
   }
 }
 
@@ -307,7 +308,7 @@ function travelTo() {
 }
 
 // Island Stat Display Functions
-function displayIslandStats() {
+function updateIslandStatPanels() {
   $('#selectedIslandDisplay .islandMineStats').empty();
   $('#selectedIslandDisplay .islandGroveStats').empty();
   _.each(Object.keys(activeIslands.selectedIsland), function(key) {
@@ -409,16 +410,78 @@ function randomEnvironment() {
   };
 }
 
+// Goods Transaction Panel
+function sellGoods(quantity) {
+  setTimeout(
+    function() {
+      goodsTransaction(quantity, activeIslands.importIsland);
+    }, calculateDeliveryTime(activeIslands.exportIsland, activeIslands.importIsland)
+  );
+  updatePlayerStatPanel();
+}
+
+function goodsTransaction(quantity, receivingIsland) {
+  // if (selectedGood === 'copper') {
+  //   activeIslands.playerLocation.copper.player -= quantity;
+  //   player.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'copper'));
+  // } else {
+  //   activeIslands.playerLocation.oliveOil.player -= quantity;
+  //   player.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'oliveOil'))
+  // }
+
+}
+
+function calculateDeliveryTime(seller, buyer) {
+  return 1000 * Math.floor(math.distance(seller.coordinates, buyer.coordinates));
+}
+
+function logGoodsPrice(goodsQuantity, goodsScarcity) {
+  if (goodsQuantity < 1) {
+    return 0;
+  } else if (goodsQuantity === 1) {
+    return logGoodsPrice(2);
+  } else {
+    return  (goodsScarcity * 100) * (1 / Math.log(goodsQuantity + 2));
+  }
+}
+
+function updateGoodsPurchasePanel(goodsQuantity, goodScarcity) {
+  var pricePerGood = logGoodsPrice(goodsQuantity, goodScarcity);
+  displayPricePerGood(pricePerGood);
+  displayTotalGoodsPrice(pricePerGood * goodsQuantity);
+}
+
+function displayPricePerGood(price) {
+  $('#pricePerGood').text(price.toString());
+}
+
+function displayTotalGoodsPrice(price) {
+  $('#totalGoodsPrice').text(price.toString());
+}
+
+function calculateGoodScarcity(island, type) {
+  let terrain = '';
+  let production = '';
+  if (type === 'copper') {
+    terrain = island.rocky || 0.1; 
+    production = island.mines || 0.1;
+  } else {
+    terrain = island.lush || 0.1; 
+    production = island.groves || 0.1;
+  }
+
+  return Math.round(Math.log(island.population * (1 / terrain) * (1 / production)));
+}
+
 // Facilities Transaction Panel
 function purchaseFacilities() {
   let cost = selections.facilityQuantity * exponentialFacilitesPrice(selections.facilityQuantity, selections.selectedFacility.scarcity);
   if (player.totalGold > cost) {
     if (activeIslands.playerLocation === activeIslands.selectedIsland || selections.selectedFacility.player > 0) {
       selections.selectedFacility.player += selections.facilityQuantity;
-      //  update player stats
-      //  update displays
       player.totalGold -= cost;
       updatePlayerStatPanel();
+      updateIslandStatPanels();
     }
   }
 }
@@ -456,68 +519,6 @@ function displayTotalFacilitiesPrice(price) {
   $('#totalFacilitiesPrice').text(price.toString());
 }
 
-// Goods Transaction Panel
-function sellGoods(quantity) {
-  setTimeout(
-    function() {
-      goodsTransaction(quantity, activeIslands.importIsland);
-    }, calculateDeliveryTime(activeIslands.playerLocation, activeIslands.importIsland)
-  );
-  updatePlayerStatPanel();
-}
-
-function goodsTransaction(quantity, receivingIsland) {
-  if (selectedGood === 'copper') {
-    activeIslands.playerLocation.copper.player -= quantity;
-    player.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'copper'));
-  } else {
-    activeIslands.playerLocation.oliveOil.player -= quantity;
-    player.totalGold += quantity * logGoodsPrice(quantity, calculateGoodScarcity(receivingIsland, 'oliveOil'))
-  }
-}
-
-function calculateDeliveryTime(seller, buyer) {
-  return 1000 * Math.floor(math.distance(seller.coordinates, buyer.coordinates));
-}
-
-function logGoodsPrice(goodsQuantity, goodsScarcity) {
-  if (goodsQuantity < 1) {
-    return 0;
-  } else if (goodsQuantity === 1) {
-    return logGoodsPrice(2);
-  } else {
-    return  (goodsScarcity * 100) * (1 / Math.log(goodsQuantity + 2));
-  }
-}
-
-function trackGoodsQuantity(goodsQuantity, goodScarcity) {
-  var pricePerGood = logGoodsPrice(goodsQuantity, goodScarcity);
-  displayPricePerGood(pricePerGood);
-  displayTotalGoodsPrice(pricePerGood * goodsQuantity);
-}
-
-function displayPricePerGood(price) {
-  $('#pricePerGood').text(price.toString());
-}
-
-function displayTotalGoodsPrice(price) {
-  $('#totalGoodsPrice').text(price.toString());
-}
-
-function calculateGoodScarcity(island, type) {
-  let terrain = '';
-  let production = '';
-  if (type === 'copper') {
-    terrain = island.rocky || 0.1; 
-    production = island.mines || 0.1;
-  } else {
-    terrain = island.lush || 0.1; 
-    production = island.groves || 0.1;
-  }
-
-  return Math.round(Math.log(island.population * (1 / terrain) * (1 / production)));
-}
-
 // Player Stat Panel Functions
 function updatePlayerStatPanel() {
   if (traveling) {
@@ -531,9 +532,6 @@ function updatePlayerStatPanel() {
 }
 
 // Map functions
-
-// first create island stats, push island object into array
-// next create islands for map based on length of that array, assign id according to index
 function plotAllIslands(map, islands) {
   assignCoordinates(islands);
   for (let i = 0; i < islands.length; i++) {
@@ -595,7 +593,7 @@ function changeActiveIsland(island) {
   }
   $('#' + previous.id).attr('class', 'island');
   highlightActiveIslands();
-  displayIslandStats();
+  updateIslandStatPanels();
 }
 
 function highlightActiveIslands() {
