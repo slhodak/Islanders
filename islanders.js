@@ -250,12 +250,18 @@ function gameLoop() {
     if (!paused) {
       day++;
       updateClock(day);
+      islanderGoodsConsumption(day);
       islanderFacilityCreation(day);
       playerFacilityOutput();
       updatePlayerStatPanel();
       updateIslandStatPanels();  
       updateGoodsTransactionPanel();
       updateFacilityPurchasePanel();
+      console.log('Day: ' + day);
+      console.log('Player copper: ' + activeIslands.playerLocation.copper.player);
+      console.log('Nonplayer copper: ' + activeIslands.playerLocation.copper.nonplayer);
+      console.log('Player mines: ' + activeIslands.playerLocation.copper.mines.player);
+      console.log('Island copper scarcity: ' + activeIslands.playerLocation.copper.scarcity);
     }
   }, 1000);
 }
@@ -286,6 +292,23 @@ function islanderFacilityCreation(day) {
       }
     });
     updateIslandStatPanels();
+  }
+}
+
+function islanderGoodsConsumption(day) {
+  if (day % 5 === 0) {
+    _.each(islands, function(island) {
+      if (island.oliveOil.nonplayer > island.oliveOil.scarcity) {
+        island.oliveOil.nonplayer -= island.oliveOil.scarcity;
+      } else {
+        island.oliveOil.nonplayer = 0;
+      }
+      if (island.copper.nonplayer > island.copper.scarcity) {
+        island.copper.nonplayer -= island.copper.scarcity;
+      } else {
+        island.copper.nonplayer = 0;
+      }
+    });
   }
 }
 
@@ -356,16 +379,15 @@ function generateIslandStats(nameFunction, id) {
   let island = {};
   island.islandName = nameFunction();
   island.id = id;
+  island.population = randomPopulation();
   let environment = randomEnvironment();
   island.rocky = environment.rocky;
   island.lush = environment.lush;
-  island.population = randomPopulation();
-  
   island.copper = {
     player: 0,
     nonplayer: 0,
     get scarcity() {
-      return calculateGoodScarcity(island.population, island.rocky, island.copper.mines.nonplayer);
+      return calculateGoodScarcity(island.population, island.rocky, island.copper.mines.nonplayer, island.copper.nonplayer);
     },
     mines: {
       maximum: Math.floor(island.rocky / 10),
@@ -379,12 +401,11 @@ function generateIslandStats(nameFunction, id) {
       }
     }
   };
-  
   island.oliveOil = {
     player: 0,
     nonplayer: 0,
     get scarcity() {
-      return calculateGoodScarcity(island.population, island.lush, island.oliveOil.groves.nonplayer);
+      return calculateGoodScarcity(island.population, island.lush, island.oliveOil.groves.nonplayer, island.oliveOil.nonplayer);
     },
     groves: {
       maximum: Math.floor(island.lush / 10),
@@ -435,9 +456,14 @@ function sellGoods() {
 }
 
 function goodsTransaction(buyer) {
-  selections.selectedGood -= selections.goodsQuantity;
-  //  buying island's nonplayer quantity grows so scarcity can react  
-  player.totalGold += logGoodsPrice(selections.goodsQuantity, buyer[selections.selectedGoodType].scarcity);
+  selections.selectedGood.player -= selections.goodsQuantity;
+
+  //  buying island's nonplayer quantity grows so scarcity can react
+  //  still need consumption function
+  selections.selectedGood.nonplayer += selections.goodsQuantity;
+  
+  player.totalGold += selections.goodsQuantity * logGoodsPrice(selections.goodsQuantity, buyer[selections.selectedGoodType].scarcity);
+  updateGoodsTransactionPanel();
 }
 
 function logGoodsPrice(quantity, scarcity) {
@@ -448,8 +474,8 @@ function logGoodsPrice(quantity, scarcity) {
   }
 }
 
-function calculateGoodScarcity(population, terrain, production) {
-  return Math.round(Math.log(population * (1 / (terrain + 1)) * (1 / (production || 1))));
+function calculateGoodScarcity(population, terrain, production, available) {
+  return Math.round(Math.log(population * (1 / (terrain + (available * 10) + 1)) * (1 / (production || 1))));
 }
 
 function calculateDeliveryTime(seller, buyer) {
