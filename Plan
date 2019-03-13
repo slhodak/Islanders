@@ -24,6 +24,7 @@ NEXT:
 				- and make it neat code!
 		- exporting
 			- base delivery time on distance √
+				- exports time measured in seconds, should be measured in days
 			- Selling and receiving islands are tracked √
 				- if not specified, receiving and selling islands are equal to player's location √
 				- distance/time calculations currently hidden--find room in island stat panel to display these (when exporting, or just always?)
@@ -34,7 +35,7 @@ NEXT:
 			- production based on either √
 				- player is on that island
 				- player has industry of same type on that island
-		- populations consuming goods bought, scarcity reacts with negative spike and rise return
+		- populations consuming goods bought, scarcity reacts with negative spike and rise return √
 		- populations growing logarithmically?
 
 	Even better:
