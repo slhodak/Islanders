@@ -259,11 +259,6 @@ function gameLoop() {
       updateIslandStatPanels();  
       updateGoodsTransactionPanel();
       updateFacilityPurchasePanel();
-      console.log('Day: ' + day);
-      console.log('Player copper: ' + activeIslands.playerLocation.copper.player);
-      console.log('Nonplayer copper: ' + activeIslands.playerLocation.copper.nonplayer);
-      console.log('Player mines: ' + activeIslands.playerLocation.copper.mines.player);
-      console.log('Island copper scarcity: ' + activeIslands.playerLocation.copper.scarcity);
     }
   }, 1000);
 }
