@@ -17,22 +17,21 @@ NEXT:
 	Exporting
 
 	Minimum:
-		- producing from facilities √ bugs
+		- producing from facilities √
 		- selling from facilities √ bugs
 		- clock increasing non-player facilities √
 			- make sure scarcity is reacting √
 				- and make it neat code!
 		- exporting
-			- calculate distance between islands (use x/y coordinates and some handy trig)
 			- base delivery time on distance √
 			- Selling and receiving islands are tracked √
 				- if not specified, receiving and selling islands are equal to player's location √
 				- distance/time calculations currently hidden--find room in island stat panel to display these (when exporting, or just always?)
 	Better:
-		- moving between islands, building on them
+		- moving between islands, building on them √
 			- 'move' button in selected island panel √
 			- time depends on distance again √
-			- production based on either
+			- production based on either √
 				- player is on that island
 				- player has industry of same type on that island
 		- populations consuming goods bought, scarcity reacts with negative spike and rise return

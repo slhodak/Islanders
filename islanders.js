@@ -276,7 +276,7 @@ function playerFacilityOutput() {
 }
 
 function islanderFacilityCreation(day) {
-  if (day % 1 === 0) {
+  if (day % 50 === 0) {
     _.each(islands, function(island) {
       if (island.oliveOil.groves.total < island.oliveOil.groves.maximum) {
         island.oliveOil.groves.nonplayer += 1;
@@ -364,29 +364,43 @@ function generateIslandStats(nameFunction, id) {
   island.copper = {
     player: 0,
     nonplayer: 0,
-    mines: {}
+    get scarcity() {
+      return calculateGoodScarcity(island.population, island.rocky, island.copper.mines.nonplayer);
+    },
+    mines: {
+      maximum: Math.floor(island.rocky / 10),
+      player: 0,
+      nonplayer: 0,
+      get total() { 
+        return island.copper.mines.player + island.copper.mines.nonplayer;
+      },
+      get scarcity() {
+        return calculateFacilityScarcity(island.population, island.rocky, island.copper.mines.maximum, island.copper.mines.total);
+      }
+    }
   };
-  island.copper.mines.maximum = Math.floor(island.rocky / 10);
-  island.copper.mines.player = 0;
-  island.copper.mines.nonplayer = 0;
-  island.copper.mines.total = island.copper.mines.player + island.copper.mines.nonplayer;
-  island.copper.mines.scarcity = calculateFacilityScarcity(island.population, island.rocky, island.copper.mines.maximum, island.copper.mines.total);
-  island.copper.scarcity = calculateGoodScarcity(island.population, island.rocky, island.copper.mines.nonplayer);
-
+  
   island.oliveOil = {
     player: 0,
     nonplayer: 0,
-    groves: {}
+    get scarcity() {
+      return calculateGoodScarcity(island.population, island.lush, island.oliveOil.groves.nonplayer);
+    },
+    groves: {
+      maximum: Math.floor(island.lush / 10),
+      player: 0,
+      nonplayer: 0,
+      get total() { 
+        return island.oliveOil.groves.player + island.oliveOil.groves.nonplayer;
+      },
+      get scarcity() {
+        return calculateFacilityScarcity(island.population, island.lush, island.oliveOil.groves.maximum, island.oliveOil.groves.total);
+      }
+    }
   };
-  island.oliveOil.groves.maximum = Math.floor(island.lush / 10);
-  island.oliveOil.groves.player = 0;
-  island.oliveOil.groves.nonplayer = 0;
-  island.oliveOil.groves.total = island.oliveOil.groves.player + island.oliveOil.groves.nonplayer;
-  island.oliveOil.groves.scarcity = calculateFacilityScarcity(island.population, island.lush, island.oliveOil.groves.maximum, island.oliveOil.groves.total);
   //  goods scarcity also has to be a function of how much the nonplayers have
   //  (which they consume back to 0 when player sells them more--
   //  assumption is they produce only the minimum of what they need but player is selling luxury)
-  island.oliveOil.scarcity = calculateGoodScarcity(island.population, island.lush, island.oliveOil.groves.nonplayer)
 
   return island;
 }
