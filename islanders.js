@@ -22,7 +22,6 @@ let selections = {
   selectedFacility: undefined,
   selectedFacilityType: 'mines',
   facilityQuantity: 0,
-  selectedGood: undefined,
   selectedGoodType: 'copper',
   goodsQuantity: 0,
   exporting: false
@@ -84,8 +83,12 @@ $(document).ready(function() {
     activeIslands[key] = startIsland;
   });
 
-  selections.selectedFacility = activeIslands.playerLocation.copper.mines;
-  selections.selectedGood = activeIslands.playerLocation.copper;
+  selections.selectedFacilityType = 'mines';
+  selections.selectedFacility = activeIslands.selectedIsland.copper.mines;
+
+  selections.selectedGoodType = 'copper';
+
+
 
   plotAllIslands($map, islands);
   highlightActiveIslands();
@@ -186,13 +189,12 @@ $(document).ready(function() {
       $(this).removeClass('notExporting');
       $(this).addClass('exporting');
       $(this).text('Exporting');
-      selections.selectedGood = activeIslands.exportIsland[selections.selectedGoodType];
     } else {
       $(this).removeClass('exporting');
       $(this).addClass('notExporting');
       $(this).text('Not exporting');
     }
-    updateGoodsTransactionPanel();
+    updateBuyersAndSellers();
   });
 
   //  Facilities UI
@@ -441,28 +443,33 @@ function randomEnvironment() {
 
 // Goods Transaction Panel
 function sellGoods() {
-  let buyer = activeIslands.playerLocation;
-  let seller = activeIslands.playerLocation;
-  if (selections.exporting) {
-    buyer = activeIslands.importIsland;
-    seller = activeIslands.exportIsland;
-  }
   setTimeout(
     function() {
-      goodsTransaction(buyer);
-    }, calculateDeliveryTime(seller, buyer)
+      goodsTransaction();
+    }, calculateDeliveryTime()
   );
   updatePlayerStatPanel();
 }
 
-function goodsTransaction(buyer) {
-  selections.selectedGood.player -= selections.goodsQuantity;
+function updateBuyersAndSellers() {
+  if (selections.exporting) {
+    activeIslands.currentSeller = activeIslands.exportIsland;
+    activeIslands.currentBuyer = activeIslands.importIsland;
+  } else {
+    activeIslands.currentSeller = activeIslands.playerLocation;
+    activeIslands.currentBuyer = activeIslands.playerLocation;
+  }
+  updateGoodsTransactionPanel();
+}
+
+function goodsTransaction() {
+  activeIslands.currentSeller[selections.selectedGoodType].player -= selections.goodsQuantity;
 
   //  buying island's nonplayer quantity grows so scarcity can react
   //  still need consumption function
-  selections.selectedGood.nonplayer += selections.goodsQuantity;
+  activeIslands.currentBuyer[selections.selectedGoodType].nonplayer += selections.goodsQuantity;
   
-  player.totalGold += selections.goodsQuantity * logGoodsPrice(selections.goodsQuantity, buyer[selections.selectedGoodType].scarcity);
+  player.totalGold += selections.goodsQuantity * logGoodsPrice(selections.goodsQuantity, activeIslands.currentBuyer[selections.selectedGoodType].scarcity);
   updateGoodsTransactionPanel();
 }
 
@@ -479,22 +486,18 @@ function calculateGoodScarcity(population, terrain, production, available) {
 }
 
 function calculateDeliveryTime(seller, buyer) {
-  return 1000 * Math.floor(math.distance(seller.coordinates, buyer.coordinates));
+  return 1000 * Math.floor(math.distance(activeIslands.currentSeller.coordinates, activeIslands.currentBuyer.coordinates));
 }
 
 function updateGoodsTransactionPanel() {
-  if (selections.exporting) {
-    selections.selectedGood = activeIslands.exportIsland[selections.selectedGoodType];
-  } else {
-    selections.selectedGood = activeIslands.playerLocation[selections.selectedGoodType];
-  }
+  let goods = activeIslands.currentSeller[selections.selectedGoodType];
   let $quantityDisplay = $('#goodsQuantity');
-  $quantityDisplay.attr('max', selections.selectedGood.player);
-  if (parseInt($quantityDisplay.val()) > selections.selectedGood.player) {
-    selections.goodsQuantity = selections.selectedGood.player
-    $quantityDisplay.val(selections.selectedGood.player);
+  $quantityDisplay.attr('max', goods.player);
+  if (parseInt($quantityDisplay.val()) > goods.player) {
+    selections.goodsQuantity = goods.player
+    $quantityDisplay.val(goods.player);
   }
-  var pricePerGood = logGoodsPrice(selections.goodsQuantity, selections.selectedGood.scarcity);
+  var pricePerGood = logGoodsPrice(selections.goodsQuantity, activeIslands.currentBuyer[selections.selectedGoodType].scarcity);
   displayPricePerGood(pricePerGood);
   displayTotalGoodsPrice(pricePerGood * selections.goodsQuantity);
 }
@@ -528,10 +531,11 @@ function calculateFacilityScarcity(population, terrain, maximum, total) {
 function updateFacilityPurchasePanel() {
   // find price and display consequences
   let $quantityDisplay = $('#facilitiesQuantity');
-  $quantityDisplay.attr('max', selections.selectedFacility.maximum - selections.selectedFacility.total);
-  if (parseInt($quantityDisplay.val()) > selections.selectedFacility.maximum) {
-    selections.facilityQuantity = selections.selectedFacility.maximum;
-    $quantityDisplay.val(selections.selectedFacility.maximum);
+  let facility = selections.selectedFacility;
+  $quantityDisplay.attr('max', facility.maximum - facility.total);
+  if (parseInt($quantityDisplay.val()) > facility.maximum) {
+    selections.facilityQuantity = facility.maximum;
+    $quantityDisplay.val(facility.maximum);
   }
   var pricePerFacility = exponentialFacilitesPrice();
   displayPricePerFacility(pricePerFacility);
@@ -623,15 +627,11 @@ function changeActiveIsland(island) {
     previous = activeIslands.exportIsland;
     activeIslands.exportIsland = island;
   } else {
-    if (selections.selectedFacilityType === 'mines') {
-      selections.selectedFacility = island.copper.mines;
-    } else {
-      selections.selectedFacility = island.oliveOil.groves;
-    }
     previous = activeIslands.selectedIsland;
     activeIslands.selectedIsland = island;
   }
   $('#' + previous.id).attr('class', 'island');
+  updateBuyersAndSellers();
   highlightActiveIslands();
   updateIslandStatPanels();
 }
