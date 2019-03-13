@@ -472,7 +472,7 @@ function logGoodsPrice(quantity, scarcity) {
   if (quantity < 1) {
     return 0;
   } else {
-    return  (scarcity * 100) * (1 / Math.log(quantity + 2));
+    return  Math.round((scarcity * 100) * (1 / Math.log(quantity + 2)));
   }
 }
 
@@ -481,7 +481,7 @@ function calculateGoodScarcity(population, terrain, production, available) {
 }
 
 function calculateDeliveryTime(seller, buyer) {
-  return 1000 * Math.floor(math.distance(activeIslands.currentSeller.coordinates, activeIslands.currentBuyer.coordinates));
+  return Math.round(1000 * Math.floor(math.distance(activeIslands.currentSeller.coordinates, activeIslands.currentBuyer.coordinates)));
 }
 
 function updateGoodsTransactionPanel() {
@@ -541,7 +541,7 @@ function exponentialFacilitesPrice() {
   if (selections.facilityQuantity < 1) {
     return 0;
   } else {
-    return 100 * Math.pow((0.5 * selections.facilityQuantity) + (3 * selections.selectedFacility.scarcity), 1.1);
+    return Math.round(100 * Math.pow((0.5 * selections.facilityQuantity) + (3 * selections.selectedFacility.scarcity), 1.1))
   }
 }
 
