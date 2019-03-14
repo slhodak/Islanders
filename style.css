@@ -185,7 +185,7 @@ p {
 
 #someKindOfLogo {
   grid-area: 1 / 9 / span 1 / span 2;
-  background-color: tan;
+  background-color: ;
 }
 
 #clockAndPause {

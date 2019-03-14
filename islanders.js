@@ -324,18 +324,33 @@ function travelTo() {
 
 // Island Stat Display Functions
 function updateIslandStatPanels() { 
-  _.each(Object.keys(activeIslands.selectedIsland), function(key) {
-  });
-  _.each(Object.keys(activeIslands.playerLocation), function(key) {
-  });
-  _.each(Object.keys(activeIslands.importIsland), function(key) {
-  });
-  _.each(Object.keys(activeIslands.exportIsland), function(key) {
-  });
 
+  _.each(islandTypes, function(type) {
+    $('#' + type + ' p.name').text(activeIslands[type].islandName);
+    $('#' + type + ' p.population').text(activeIslands[type].population);
+    $('#' + type + ' p.rocky').text(activeIslands[type].rocky);
+    $('#' + type + ' p.lush').text(activeIslands[type].lush);
+    $('#' + type + ' p.copperHeader').text('Copper');
+    $('#' + type + ' p.playerCopper').text(activeIslands[type].copper.player);
+    $('#' + type + ' p.islanderCopper').text(activeIslands[type].copper.nonplayer);
+    $('#' + type + ' p.minesHeader').text('Mines');
+    $('#' + type + ' p.playerMines').text(activeIslands[type].copper.mines.player);
+    $('#' + type + ' p.islanderMines').text(activeIslands[type].copper.mines.nonplayer);
+    $('#' + type + ' p.oliveOilHeader').text('Olive Oil');
+    $('#' + type + ' p.playerOliveOil').text(activeIslands[type].oliveOil.player);
+    $('#' + type + ' p.islanderOliveOil').text(activeIslands[type].oliveOil.nonplayer);
+    $('#' + type + ' p.grovesHeader').text('Groves');
+    $('#' + type + ' p.playerGroves').text(activeIslands[type].oliveOil.groves.player);
+    $('#' + type + ' p.islanderGroves').text(activeIslands[type].oliveOil.groves.nonplayer);
+  });
+  
   //  could I extract the island name from the element id 
   //  and plug that into activeIslands[]? try later...
 }
+
+let islandTypes = [
+  'selectedIsland', 'playerLocation', 'exportIsland', 'importIsland'
+];
 
 let islandStatDisplayElements = [
   'name', 'population', 'rocky', 'lush', 'copperHeader', 'playerCopper',
@@ -347,7 +362,7 @@ let islandStatDisplayElements = [
 function createIslandStatPanelFields() {
   _.each($('.islandStatDisplayPanel'), function(panel) {
     _.each(islandStatDisplayElements, function(element) {
-      $('<p>sup</p>').addClass('.' + element).appendTo(panel);
+      $('<p>sup</p>').addClass(element).appendTo(panel);
     });
   });
 }
@@ -465,9 +480,6 @@ function updateBuyersAndSellers() {
 
 function goodsTransaction() {
   activeIslands.currentSeller[selections.selectedGoodType].player -= selections.goodsQuantity;
-
-  //  buying island's nonplayer quantity grows so scarcity can react
-  //  still need consumption function
   activeIslands.currentBuyer[selections.selectedGoodType].nonplayer += selections.goodsQuantity;
   
   player.totalGold += selections.goodsQuantity * logGoodsPrice(selections.goodsQuantity, activeIslands.currentBuyer[selections.selectedGoodType].scarcity);
@@ -525,12 +537,10 @@ function purchaseFacilities() {
 }
 
 function calculateFacilityScarcity(population, terrain, maximum, total) {
-  // relationship of population and usable land & existing facilities
   return Math.log((100 * (1/population)) + (100 * (1/terrain)) + (0.1 * (maximum + total)));
 }
 
 function updateFacilityPurchasePanel() {
-  // find price and display consequences
   let $quantityDisplay = $('#facilitiesQuantity');
   let facility = selections.selectedFacility;
   $quantityDisplay.attr('max', facility.maximum - facility.total);
@@ -579,8 +589,6 @@ function plotAllIslands(map, islands) {
   }
 }
 
-// I'm mutating my array!! Can use closure to assign non-repeating coordinates within the
-// island creation function
 function assignCoordinates(islands) {
   let coordinates = createCoordinates(islands.length, 32);
   for (let i = 0; i < islands.length; i++) {
