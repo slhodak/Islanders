@@ -76,9 +76,9 @@ p {
 .islandStatDisplayPanel {
   display: grid;
   grid-template-areas:
-    'name name copperHeader minesHeader oliveOilHeader grovesHeader'
-    'population population playerCopper playerMines playerOliveOil playerGroves'
-    'rocky lush islanderCopper islanderMines islanderOliveOil islanderGroves';
+    'name name name copperHeader minesHeader oliveOilHeader grovesHeader'
+    'population population playerRowTitle playerCopper playerMines playerOliveOil playerGroves'
+    'rocky lush islanderRowTitle islanderCopper islanderMines islanderOliveOil islanderGroves';
 }
 
 .name {
@@ -92,6 +92,12 @@ p {
 }
 .lush {
   grid-area: lush; 
+}
+.playerRowTitle {
+  grid-area: playerRowTitle;
+}
+.islanderRowTitle {
+  grid-area: islanderRowTitle;
 }
 .copperHeader {
   grid-area: copperHeader;

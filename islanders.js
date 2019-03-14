@@ -327,21 +327,23 @@ function updateIslandStatPanels() {
 
   _.each(islandTypes, function(type) {
     $('#' + type + ' p.name').text(activeIslands[type].islandName);
-    $('#' + type + ' p.population').text(activeIslands[type].population);
-    $('#' + type + ' p.rocky').text(activeIslands[type].rocky);
-    $('#' + type + ' p.lush').text(activeIslands[type].lush);
+    $('#' + type + ' p.population').text('Population: ' + activeIslands[type].population);
+    $('#' + type + ' p.rocky').text('Rocky: ' + activeIslands[type].rocky);
+    $('#' + type + ' p.lush').text('Lush: ' + activeIslands[type].lush);
+    $('#' + type + ' p.playerRowTitle').text('Player:');
+    $('#' + type + ' p.islanderRowTitle').text('Nonplayer:');
     $('#' + type + ' p.copperHeader').text('Copper');
     $('#' + type + ' p.playerCopper').text(activeIslands[type].copper.player);
     $('#' + type + ' p.islanderCopper').text(activeIslands[type].copper.nonplayer);
     $('#' + type + ' p.minesHeader').text('Mines');
-    $('#' + type + ' p.playerMines').text(activeIslands[type].copper.mines.player);
-    $('#' + type + ' p.islanderMines').text(activeIslands[type].copper.mines.nonplayer);
+    $('#' + type + ' p.playerMines').text(activeIslands[type].copper.mines.player + ' / ' + activeIslands[type].copper.mines.maximum);
+    $('#' + type + ' p.islanderMines').text(activeIslands[type].copper.mines.nonplayer + ' / ' + activeIslands[type].copper.mines.maximum);
     $('#' + type + ' p.oliveOilHeader').text('Olive Oil');
     $('#' + type + ' p.playerOliveOil').text(activeIslands[type].oliveOil.player);
     $('#' + type + ' p.islanderOliveOil').text(activeIslands[type].oliveOil.nonplayer);
     $('#' + type + ' p.grovesHeader').text('Groves');
-    $('#' + type + ' p.playerGroves').text(activeIslands[type].oliveOil.groves.player);
-    $('#' + type + ' p.islanderGroves').text(activeIslands[type].oliveOil.groves.nonplayer);
+    $('#' + type + ' p.playerGroves').text(activeIslands[type].oliveOil.groves.player + ' / ' + activeIslands[type].oliveOil.groves.maximum);
+    $('#' + type + ' p.islanderGroves').text(activeIslands[type].oliveOil.groves.nonplayer + ' / ' + activeIslands[type].oliveOil.groves.maximum);
   });
   
   //  could I extract the island name from the element id 
@@ -353,7 +355,8 @@ let islandTypes = [
 ];
 
 let islandStatDisplayElements = [
-  'name', 'population', 'rocky', 'lush', 'copperHeader', 'playerCopper',
+  'name', 'population', 'rocky', 'lush', 'playerRowTitle', 'islanderRowTitle',
+  'copperHeader', 'playerCopper',
   'islanderCopper', 'minesHeader', 'playerMines', 'islanderMines',
   'oliveOilHeader', 'playerOliveOil', 'islanderOliveOil', 'grovesHeader', 
   'playerGroves', 'islanderGroves'
@@ -410,7 +413,6 @@ function generateIslandStats(nameFunction, id) {
     mines: {
       maximum: Math.floor(island.rocky / 10),
       player: 0,
-      nonplayer: 0,
       get total() { 
         return island.copper.mines.player + island.copper.mines.nonplayer;
       },
@@ -419,6 +421,7 @@ function generateIslandStats(nameFunction, id) {
       }
     }
   };
+  island.copper.mines.nonplayer = Math.floor(island.copper.mines.maximum / 4);
   island.oliveOil = {
     player: 0,
     nonplayer: 0,
@@ -428,7 +431,6 @@ function generateIslandStats(nameFunction, id) {
     groves: {
       maximum: Math.floor(island.lush / 10),
       player: 0,
-      nonplayer: 0,
       get total() { 
         return island.oliveOil.groves.player + island.oliveOil.groves.nonplayer;
       },
@@ -437,6 +439,8 @@ function generateIslandStats(nameFunction, id) {
       }
     }
   };
+  island.oliveOil.groves.nonplayer = Math.floor(island.oliveOil.groves.maximum / 4);
+  
   //  goods scarcity also has to be a function of how much the nonplayers have
   //  (which they consume back to 0 when player sells them more--
   //  assumption is they produce only the minimum of what they need but player is selling luxury)
