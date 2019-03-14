@@ -5,7 +5,7 @@
   </head>
   <body>
     <div id="root">
-      <div id="playerDisplay">
+      <div id="playerStatDisplayPanel">
         <div id="player">
           <p id="myName"></p>
           <p id="location"></p>
@@ -19,21 +19,29 @@
         <button id="hide">Hide/Show Clock</button>
         <button id="pause">Pause</button>
       </div>
-      <div id="selectedIslandDisplay">
-        <div class="islandCopperStats"">
-          <p>Mines</p>
-        </div>
-        <div class="islandOliveOilStats">
-        </div>
-        <button id="travel">Travel to</button>
+
+      <div class="islandStatDisplayPanel" id="selectedIsland">
       </div>
-      <div id="importIslandDisplay">
-        <div class="islandCopperStats">
-        </div>
-        <div class="islandOliveOilStats">
-        </div>
+      <div class="islandStatDisplayPanel" id="importIsland">
       </div>
-      <div id="sellGoods">
+      <div class="islandStatDisplayPanel" id="exportIsland">
+      </div>
+      <div class="islandStatDisplayPanel" id="playerLocation">
+      </div>
+
+      
+      <div id="facilitiesTransactionPanel">
+        <button id="mines" class="buyingMines">Mines</button>
+        <button id="groves">Groves</button></br>
+        <label>Quantity:</label>
+        <input id="facilitiesQuantity" type="number" min="0" value="0"></input></br>
+        <label>Price per facility:</label>
+        <span id="pricePerFacility">0</span></br>
+        <label>Total:</label>
+        <span id="totalFacilitiesPrice">0</span></br>
+        <button id="buy">Buy</button>
+      </div>
+      <div id="goodsTransactionPanel">
         <button id="copper" class="sellingCopper">Copper</button>
         <button id="oliveOil">Olive Oil</button></br>
         <label>Quantity:</label>
@@ -46,17 +54,6 @@
         <button id="exporter">Exporter</button></br>
         <button id="sell">Sell</button>
         <button id="export" class="notExporting">Not exporting</button>
-      </div>
-      <div id="buyFacilities">
-        <button id="mines" class="buyingMines">Mines</button>
-        <button id="groves">Groves</button></br>
-        <label>Quantity:</label>
-        <input id="facilitiesQuantity" type="number" min="0" value="0"></input></br>
-        <label>Price per facility:</label>
-        <span id="pricePerFacility">0</span></br>
-        <label>Total:</label>
-        <span id="totalFacilitiesPrice">0</span></br>
-        <button id="buy">Buy</button>
       </div>
     </div>
     

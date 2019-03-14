@@ -8,18 +8,12 @@ p {
 
 #root {
   width: 1000px;
-  height: 500px;
+  height: 1000px;
   border: 20px ridge gray;
   background-color: black;
   display: grid;
   grid-gap: 5px;
-  grid-template: repeat(5, 1fr) / repeat(10, 1fr);
-}
-
-#playerDisplay {
-  grid-area: 1 / 6 / span 3 / span 2;
-  background-color: maroon;
-  color: white;
+  grid-template: repeat(10, 1fr) / repeat(10, 1fr);
 }
 
 #map {
@@ -73,8 +67,86 @@ p {
   background-color: green;
 }
 
-#selectedIslandDisplay {
-  grid-area: 2 / 8 / span 2 / span 3;
+#playerStatDisplayPanel {
+  grid-area: 3 / 6 / span 1 / span 5;
+  background-color: maroon;
+  color: white;
+}
+
+.islandStatDisplayPanel {
+  display: grid;
+  grid-template-areas:
+    'name name copperHeader minesHeader oliveOilHeader grovesHeader'
+    'population population playerCopper playerMines playerOliveOil playerGroves'
+    'rocky lush islanderCopper islanderMines islanderOliveOil islanderGroves';
+}
+
+.name {
+  grid-area: name;
+}
+.population {
+  grid-area: population;
+}
+.rocky {
+  grid-area: rocky;  
+}
+.lush {
+  grid-area: lush; 
+}
+.copperHeader {
+  grid-area: copperHeader;
+}
+.playerCopper {
+  grid-area: playerCopper; 
+}
+.islanderCopper {
+  grid-area: islanderCopper;
+}
+.minesHeader {
+  grid-area: minesHeader;
+}
+.playerMines {
+  grid-area: playerMines;
+}
+.islanderMines {
+  grid-area: islanderMines;
+}
+.oliveOilHeader {
+  grid-area: oliveOilHeader;
+}
+.playerOliveOil {
+  grid-area: playerOliveOil;
+}
+.islanderOliveOil {
+  grid-area: islanderOliveOil;
+}
+.grovesHeader {
+  grid-area: grovesHeader;
+}
+.playerGroves {
+  grid-area: playerGroves;
+}
+.islanderGroves {
+  grid-area: islanderGroves;
+}
+
+#playerLocation {
+  grid-area: 4 / 6 / span 1 / span 5;
+  background-color: maroon;
+}
+
+#importIsland {
+  grid-area: 5 / 6 / span 1 / span 5;
+  background-color: orange;
+}
+
+#exportIsland {
+  grid-area: 6 / 6 / span 1 / span 5;
+  background-color: turquoise;
+}
+
+#selectedIsland {
+  grid-area: 6 / 1 / span 1 / span 5;
   background-color: lightgreen;
 }
 
@@ -83,28 +155,15 @@ p {
   color: white;
 }
 
-.islandCopperStats{
-  display: inline-block;
-}
-
-.islandOliveOilStats {
-  display: inline-block;
-}
-
-#importIslandDisplay {
-  grid-area: 4 / 8 / span 2 / span 3;
-  background-color: orange;
-}
-
-#sellGoods {
-  grid-area: 4 / 6 / span 1 / span 2;
-  background-color: gray;
-}
-
-#buyFacilities {
-  grid-area: 5 / 6 / span 1 / span 2;
+#facilitiesTransactionPanel {
+  grid-area: 1 / 6 / span 1 / span 3;
   background-color: maroon;
   color: gray;
+}
+
+#goodsTransactionPanel {
+  grid-area: 2 / 6 / span 1 / span 3;
+  background-color: gray;
 }
 
 .sellingCopper {
@@ -124,23 +183,17 @@ p {
   background-color: #3a6;
 }
 
-#playerInventory {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-
 #clockAndPause {
-  grid-area: 1 / 8 / span 1 / span 3;
-  background-color: black;
-  height: 100%;
-  width: 100%;
+  grid-area: 1 / 9 / span 2 / span 2;
+  background-color: gray;
   z-index: 1;
 
-  display: grid;
-  grid-template: repeat(2, 50%) / repeat(4, 25%);
+/*  display: grid;
+  grid-template: repeat(2, 50%) / repeat(4, 25%);*/
 }
 
 #clockAndPause p {
-  grid-area: 1 / 1 / span 1 / span 2;
+  grid-area: 1 / 1 / span 1 / span 1;
   color: white;
   font-size: 20px;
 }

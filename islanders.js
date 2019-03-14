@@ -59,7 +59,7 @@ let islandNames = [
   'Amorgos',
   'Donousa',
   'Ios',
-  'Foleganrdos',
+  'Folegandros',
   'Sikinos',
   'Thirasia',
   'Santorini',
@@ -143,25 +143,25 @@ $(document).ready(function() {
     updateGoodsTransactionPanel();
   });
 
-  $('#sellGoods #copper').on('mousedown', function(e) {
-    $('#sellGoods #oliveOil').removeClass('sellingOliveOil');
+  $('#goodsTransactionPanel #copper').on('mousedown', function(e) {
+    $('#goodsTransactionPanel #oliveOil').removeClass('sellingOliveOil');
     $(this).addClass('sellingCopper');
     selections.selectedGoodType = 'copper';
     updateGoodsTransactionPanel();
   });
 
-  $('#sellGoods #oliveOil').on('mousedown', function(e) {
-    $('#sellGoods #copper').removeClass('sellingCopper');
+  $('#goodsTransactionPanel #oliveOil').on('mousedown', function(e) {
+    $('#goodsTransactionPanel #copper').removeClass('sellingCopper');
     $(this).addClass('sellingOliveOil'); 
     selections.selectedGoodType = 'oliveOil';
     updateGoodsTransactionPanel();
   });
 
-    $('#sellGoods #sell').on('mousedown', function(e) {
-    sellGoods();
+    $('#goodsTransactionPanel #sell').on('mousedown', function(e) {
+    goodsTransactionPanel();
   });
 
-  $('#sellGoods #importer').on('mousedown', function(e) {
+  $('#goodsTransactionPanel #importer').on('mousedown', function(e) {
     choosingImporter = !choosingImporter;
     choosingExporter = false;
     if (choosingImporter === true) {
@@ -172,7 +172,7 @@ $(document).ready(function() {
     }
   });
 
-  $('#sellGoods #exporter').on('mousedown', function(e) {
+  $('#goodsTransactionPanel #exporter').on('mousedown', function(e) {
     choosingExporter = !choosingExporter;
     choosingImporter = false;
     if (choosingExporter === true) {
@@ -183,7 +183,7 @@ $(document).ready(function() {
     }
   });
 
-  $('#sellGoods #export').on('mousedown', function(e) {
+  $('#goodsTransactionPanel #export').on('mousedown', function(e) {
     selections.exporting = !selections.exporting;
     if (selections.exporting) {
       $(this).removeClass('notExporting');
@@ -203,23 +203,23 @@ $(document).ready(function() {
     updateFacilityPurchasePanel();
   });
 
-  $('#buyFacilities #mines').on('mousedown', function(e) {
-    $('#buyFacilities #groves').removeClass('buyingGroves');
+  $('#facilitiesTransactionPanel #mines').on('mousedown', function(e) {
+    $('#facilitiesTransactionPanel #groves').removeClass('buyingGroves');
     $(this).addClass('buyingMines');
     selections.selectedFacilityType = 'mines';
     selections.selectedFacility = activeIslands.selectedIsland.copper.mines;
     updateFacilityPurchasePanel();
   });
 
-  $('#buyFacilities #groves').on('mousedown', function(e) {
-    $('#buyFacilities #mines').removeClass('buyingMines');
+  $('#facilitiesTransactionPanel #groves').on('mousedown', function(e) {
+    $('#facilitiesTransactionPanel #mines').removeClass('buyingMines');
     $(this).addClass('buyingGroves');
     selections.selectedFacilityType = 'groves';
     selections.selectedFacility = activeIslands.selectedIsland.oliveOil.groves;
     updateFacilityPurchasePanel();
   });
 
-  $('#buyFacilities #buy').on('mousedown', function(e) {
+  $('#facilitiesTransactionPanel #buy').on('mousedown', function(e) {
     purchaseFacilities();
   });
 
