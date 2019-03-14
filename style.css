@@ -77,6 +77,14 @@ p {
   color: white;
 }
 
+.traveling {
+  background-color: maroon;
+  color: white;
+}
+.notTraveling {
+  background-color: green;
+}
+
 .islandStatDisplayPanel {
   display: grid;
   grid-template-areas:
@@ -159,11 +167,6 @@ p {
 #selectedIsland {
   grid-area: 6 / 1 / span 1 / span 5;
   background-color: lightgreen;
-}
-
-.traveling {
-  background-color: maroon;
-  color: white;
 }
 
 #facilitiesTransactionPanel {

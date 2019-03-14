@@ -28,9 +28,10 @@ let selections = {
 }
 
 let player = {
-    totalGroves: 0,
-    totalMines: 0,
-    totalGold: 1000
+  location: undefined,
+  groves: 0,
+  mines: 0,
+  gold: 1000
 };
 
 let date = new Date();
@@ -93,6 +94,7 @@ $(document).ready(function() {
   plotAllIslands($map, islands);
   highlightActiveIslands();
 
+  createPlayerStatPanel();
   updatePlayerStatPanel();
 
   createIslandStatPanelFields();
@@ -104,13 +106,15 @@ $(document).ready(function() {
     updateFacilityPurchasePanel();
   });
 
+  $('#travel').text('Travel to ' + activeIslands.selectedIsland.islandName);
   $('#travel').on('mousedown', function(e) {
     if (traveling === false) {
       relocatingPlayer = true;
       traveling = true;
+      $(this).removeClass('notTraveling');
       travelTo(activeIslands.selectedIsland);
       if (traveling) {
-        $(this).attr('class', 'traveling');
+        $(this).addClass('traveling');
           $('#travel').text('traveling.');
           setTimeout(function() {
             if (traveling) {
@@ -162,7 +166,7 @@ $(document).ready(function() {
   });
 
   $('#goodsTransactionPanel #sell').on('mousedown', function(e) {
-    goodsTransactionPanel();
+    sellGoods();
   });
 
   $('#goodsTransactionPanel #importer').on('mousedown', function(e) {
@@ -291,7 +295,7 @@ function playerFacilityOutput() {
 }
 
 function islanderFacilityCreation(day) {
-  if (day % 50 === 0) {
+  if (day % 100 === 0) {
     _.each(islands, function(island) {
       if (island.oliveOil.groves.total < island.oliveOil.groves.maximum) {
         island.oliveOil.groves.nonplayer += 1;
@@ -324,8 +328,9 @@ function islanderGoodsConsumption(day) {
 function travelTo() {
   setTimeout(function() {
     traveling = false;
-    $('#travel').attr('class', '');
-    $('#travel').text('Travel to');
+    $('#travel').removeClass('traveling');
+    $('#travel').addClass('notTraveling');
+    $('#travel').text('Travel to ' + activeIslands.selectedIsland.islandName);
   }, calculateDeliveryTime(activeIslands.playerLocation, activeIslands.selectedIsland));
   relocatingPlayer = true;
   changeActiveIsland(activeIslands.selectedIsland);
@@ -475,7 +480,7 @@ function sellGoods() {
   setTimeout(
     function() {
       goodsTransaction();
-    }, calculateDeliveryTime()
+    }, calculateDeliveryTime(activeIslands.currentSeller, activeIslands.currentBuyer)
   );
   updatePlayerStatPanel();
 }
@@ -495,7 +500,7 @@ function goodsTransaction() {
   activeIslands.currentSeller[selections.selectedGoodType].player -= selections.goodsQuantity;
   activeIslands.currentBuyer[selections.selectedGoodType].nonplayer += selections.goodsQuantity;
   
-  player.totalGold += selections.goodsQuantity * logGoodsPrice(selections.goodsQuantity, activeIslands.currentBuyer[selections.selectedGoodType].scarcity);
+  player.gold += selections.goodsQuantity * logGoodsPrice(selections.goodsQuantity, activeIslands.currentBuyer[selections.selectedGoodType].scarcity);
   updateGoodsTransactionPanel();
 }
 
@@ -511,8 +516,8 @@ function calculateGoodScarcity(population, terrain, production, available) {
   return Math.round(Math.log(population * (1 / (terrain + (available * 10) + 1)) * (1 / (production || 1))));
 }
 
-function calculateDeliveryTime(seller, buyer) {
-  return Math.round(1000 * Math.floor(math.distance(activeIslands.currentSeller.coordinates, activeIslands.currentBuyer.coordinates)));
+function calculateDeliveryTime(a, b) {
+  return Math.round(1000 * Math.floor(math.distance(a.coordinates, b.coordinates)));
 }
 
 function updateGoodsTransactionPanel() {
@@ -539,10 +544,10 @@ function displayTotalGoodsPrice(price) {
 // Facilities Transaction Panel
 function purchaseFacilities() {
   let cost = selections.facilityQuantity * exponentialFacilitesPrice(selections.facilityQuantity, selections.selectedFacility.scarcity);
-  if (player.totalGold > cost) {
+  if (player.gold > cost) {
     if (activeIslands.playerLocation === activeIslands.selectedIsland || selections.selectedFacility.player > 0) {
       selections.selectedFacility.player += selections.facilityQuantity;
-      player.totalGold -= cost;
+      player.gold -= cost;
       updatePlayerStatPanel();
       updateIslandStatPanels();
     }
@@ -590,7 +595,18 @@ function updatePlayerStatPanel() {
     $('#location').text('Location: ' + activeIslands.playerLocation.islandName);
   }
   _.each(Object.keys(player), function(stat) {
-    $('#' + stat).text(stat + ': ' + player[stat])
+    if (stat !== 'location') {
+      $('#' + stat).text(stat.charAt(0).toUpperCase() + stat.slice(1) + ': ' + player[stat]);
+    }
+  });
+}
+
+function createPlayerStatPanel() {
+  _.each(Object.keys(player), function(stat) {
+    var $stat = $('<p></p>');
+    $stat.attr('id', stat);
+    $stat.text(stat.charAt(0).toUpperCase() + stat.slice(1) + ': ' + player[stat]);
+    $stat.appendTo($('#playerStatDisplayPanel'));
   });
 }
 
@@ -653,6 +669,8 @@ function changeActiveIsland(island) {
     activeIslands.selectedIsland = island;
   }
   $('#' + previous.id).attr('class', 'island');
+  $('#travel').text('Travel to ' + activeIslands.selectedIsland.islandName);
+
   updateBuyersAndSellers();
   highlightActiveIslands();
   updateIslandStatPanels();
