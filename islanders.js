@@ -88,11 +88,13 @@ $(document).ready(function() {
 
   selections.selectedGoodType = 'copper';
 
-
-
   plotAllIslands($map, islands);
   highlightActiveIslands();
+
   updatePlayerStatPanel();
+
+  createIslandStatPanelFields();
+  updateIslandStatPanels();
 
   $('.island').on('mousedown', function(e) {
     var thisIsland = islands[parseInt($(this).attr('id'))];
@@ -321,28 +323,32 @@ function travelTo() {
 }
 
 // Island Stat Display Functions
-function updateIslandStatPanels() {
-  $('#selectedIslandDisplay .islandMineStats').empty();
-  $('#selectedIslandDisplay .islandGroveStats').empty();
+function updateIslandStatPanels() { 
   _.each(Object.keys(activeIslands.selectedIsland), function(key) {
-    
-    //  if element is a number, display it, if it is an object, dig a level down...
-    if (typeof(activeIslands.selectedIsland[key]) === 'number') {
-      var $element = $('<p></p>');
-      $element.text(key + ': ' + activeIslands.selectedIsland[key]);
-      $element.appendTo($('#selectedIslandDisplay .islandMineStats'));   
-    } else if (typeof(activeIslands.selectedIsland[key]) === 'object') {
-      
-      _.each(Object.keys(activeIslands.selectedIsland[key]), function(key) {
-        var $element = $('<p></p>');
-        $element.text(key + ': ' + activeIslands.selectedIsland[key]);
-        $element.appendTo($('#selectedIslandDisplay .islandGroveStats'));  
-      });
-    }
+  });
+  _.each(Object.keys(activeIslands.playerLocation), function(key) {
   });
   _.each(Object.keys(activeIslands.importIsland), function(key) {
+  });
+  _.each(Object.keys(activeIslands.exportIsland), function(key) {
+  });
 
-    $('#importIslandDisplay p#' + key).text(key + ': ' + activeIslands.importIsland[key]);  
+  //  could I extract the island name from the element id 
+  //  and plug that into activeIslands[]? try later...
+}
+
+let islandStatDisplayElements = [
+  'name', 'population', 'rocky', 'lush', 'copperHeader', 'playerCopper',
+  'islanderCopper', 'minesHeader', 'playerMines', 'islanderMines',
+  'oliveOilHeader', 'playerOliveOil', 'islanderOliveOil', 'grovesHeader', 
+  'playerGroves', 'islanderGroves'
+];
+
+function createIslandStatPanelFields() {
+  _.each($('.islandStatDisplayPanel'), function(panel) {
+    _.each(islandStatDisplayElements, function(element) {
+      $('<p>sup</p>').addClass('.' + element).appendTo(panel);
+    });
   });
 }
 

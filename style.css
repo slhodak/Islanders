@@ -183,8 +183,13 @@ p {
   background-color: #3a6;
 }
 
+#someKindOfLogo {
+  grid-area: 1 / 9 / span 1 / span 2;
+  background-color: tan;
+}
+
 #clockAndPause {
-  grid-area: 1 / 9 / span 2 / span 2;
+  grid-area: 2 / 9 / span 1 / span 2;
   background-color: gray;
   z-index: 1;
 
