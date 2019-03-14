@@ -38,3 +38,18 @@ For instance:
   When export is toggled on, you sell between import/export islands,
     otherwise sales occur from and to playerLocation (if possible)
 
+
+////
+
+What to display in player stat panel?
+  - Birthplace
+  - total mines, total groves
+  - total # islands built on
+  - profits to date
+  - revenue to date
+
+
+
+
+
+
