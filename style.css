@@ -1,3 +1,6 @@
+html {
+  background-color: black;
+}
 body {
   margin: 0px;
 }
@@ -8,12 +11,12 @@ p {
 
 #root {
   width: 1000px;
-  height: 1000px;
+  height: 500px;
   border: 20px ridge gray;
   background-color: black;
   display: grid;
   grid-gap: 5px;
-  grid-template: repeat(10, 1fr) / repeat(10, 1fr);
+  grid-template: repeat(6, 1fr) / repeat(10, 1fr);
 }
 
 #map {
@@ -21,6 +24,7 @@ p {
   width: 100%;
   background-color: blue;
   border-right: 5px ridge gray;
+  border-bottom: 5px ridge gray;
   grid-area: 1 / 1 / span 5 / span 5;
   display: inline-grid;
   grid-template: repeat(32, 1fr) / repeat(32, 1fr);
@@ -139,6 +143,7 @@ p {
 #playerLocation {
   grid-area: 4 / 6 / span 1 / span 5;
   background-color: maroon;
+  color: white;
 }
 
 #importIsland {
@@ -164,29 +169,104 @@ p {
 #facilitiesTransactionPanel {
   grid-area: 1 / 6 / span 1 / span 3;
   background-color: maroon;
-  color: gray;
+  color: white;
+  display: grid;
+  grid-template-areas:
+    'min min qty vqty'
+    'min min per vper'
+    'gro gro tot vtot'
+    'gro gro buy buy';
+}
+#mines {
+  grid-area: min;
+}
+#groves {
+  grid-area: gro;
+}
+.buyingMines {
+  grid-area: min;
+  color: white;
+  background-color: gray;
+}
+.buyingGroves {
+  grid-area: gro;
+  background-color: #3a6;
+}
+#facilitiesQuantityLabel {
+  grid-area: qty;
+}
+#facilitiesQuantity {
+  grid-area: vqty;
+}
+#pricePerFacilityLabel {
+  grid-area: per;
+}
+#pricePerFacility {
+  grid-area: vper;
+}
+#totalFacilitiesPriceLabel {
+  grid-area: tot;
+}
+#totalFacilitiesPrice {
+  grid-area: vtot;
+}
+#buy {
+ grid-area: buy;
 }
 
 #goodsTransactionPanel {
   grid-area: 2 / 6 / span 1 / span 3;
   background-color: gray;
+  display: grid;
+  grid-template-areas: 
+    'cop cop qty vqty'
+    'oil oil per vper'
+    'im ex tot vtot'
+    'exping exping sell sell';
 }
-
+#copper {
+  grid-area: cop;
+}
+#oliveOil {
+  grid-area: oil;
+}
 .sellingCopper {
+  grid-area: cop;
   background-color: #e27333;
 }
-
 .sellingOliveOil {
+  grid-area: oil;
   background-color: #ef8;
 }
-
-.buyingMines {
-  background-color: gray;
-  color: white;
+#goodsQuantityLabel {
+  grid-area: qty;
 }
-
-.buyingGroves {
-  background-color: #3a6;
+#goodsQuantity {
+  grid-area: vqty;
+}
+#importer {
+  grid-area: im;
+}
+#exporter {
+  grid-area: ex;
+}
+#pricePerGoodLabel {
+  grid-area: per;
+}
+#pricePerGood {
+  grid-area: vper;
+}
+#totalGoodsPriceLabel {
+  grid-area: tot;
+}
+#totalGoodsPrice {
+  grid-area: vtot;
+}
+#sell {
+ grid-area: sell;
+}
+#exporting {
+  grid-area: exping;
 }
 
 #someKindOfLogo {
@@ -199,25 +279,26 @@ p {
   background-color: gray;
   z-index: 1;
 
-/*  display: grid;
-  grid-template: repeat(2, 50%) / repeat(4, 25%);*/
+  display: grid;
+  grid-template: repeat(2, 50%) / repeat(4, 25%);
 }
 
 #clockAndPause p {
-  grid-area: 1 / 1 / span 1 / span 1;
+  margin: auto;
+  grid-area: 1 / 1 / span 1 / span 4;
   color: white;
   font-size: 20px;
 }
 
-#clockAndPause #hide {
+#clockAndPause #showDay {
   grid-area: 2 / 1 / span 1 / span 2;
+}
+
+.clickedIn {
+  background-color: gray;
+  border: 3px inset white;
 }
 
 #clockAndPause #pause {
   grid-area: 2 / 3 / span 1 / span 2;
-}
-
-.paused {
-  background-color: gray;
-  border: 3px inset white;
 }

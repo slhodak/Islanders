@@ -7,16 +7,11 @@
     <div id="root">
       <div id="playerStatDisplayPanel">
         <div id="player">
-          <p id="myName"></p>
-          <p id="location"></p>
-          <p id="totalMines"></p>
-          <p id="totalGroves"></p>
-          <p id="totalGold"></p>
         </div>
       </div>
       <div id="clockAndPause">
         <p id="time"></p>
-        <button id="hide">Hide/Show Clock</button>
+        <button id="showDay">Hide/Show Day</button>
         <button id="pause">Pause</button>
       </div>
 
@@ -32,28 +27,28 @@
       
       <div id="facilitiesTransactionPanel">
         <button id="mines" class="buyingMines">Mines</button>
-        <button id="groves">Groves</button></br>
-        <label>Quantity:</label>
-        <input id="facilitiesQuantity" type="number" min="0" value="0"></input></br>
-        <label>Price per facility:</label>
-        <span id="pricePerFacility">0</span></br>
-        <label>Total:</label>
-        <span id="totalFacilitiesPrice">0</span></br>
+        <button id="groves">Groves</button>
+        <label id="facilitiesQuantityLabel">Quantity:</label>
+        <input id="facilitiesQuantity" type="number" min="0" value="0"></input>
+        <label id="pricePerFacilityLabel">Price per facility:</label>
+        <span id="pricePerFacility">0</span>
+        <label id="totalFacilitiesPriceLabel">Total:</label>
+        <span id="totalFacilitiesPrice">0</span>
         <button id="buy">Buy</button>
       </div>
       <div id="goodsTransactionPanel">
-        <button id="copper" class="sellingCopper">Copper</button>
-        <button id="oliveOil">Olive Oil</button></br>
-        <label>Quantity:</label>
-        <input id="goodsQuantity" type="number" min="0" value="0"></input></br>
-        <label>Price per good:</label>
-        <span id="pricePerGood">0</span></br>
-        <label>Total:</label>
-        <span id="totalGoodsPrice">0</span></br>
+        <button id="copper" class="copper sellingCopper">Copper</button>
+        <button id="oliveOil" class="oliveOil">Olive Oil</button>
+        <label id="goodsQuantityLabel">Quantity:</label>
+        <input id="goodsQuantity" type="number" min="0" value="0"></input>
+        <label id="pricePerGoodLabel">Price per good:</label>
+        <span id="pricePerGood">0</span>
+        <label id="totalGoodsPriceLabel">Total:</label>
+        <span id="totalGoodsPrice">0</span>
         <button id="importer">Importer</button>
-        <button id="exporter">Exporter</button></br>
+        <button id="exporter">Exporter</button>
         <button id="sell">Sell</button>
-        <button id="export" class="notExporting">Not exporting</button>
+        <button id="exporting" class="notExporting">Not exporting</button>
       </div>
       <div id="someKindOfLogo">
       </div>

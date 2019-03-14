@@ -33,6 +33,8 @@ let player = {
     totalGold: 1000
 };
 
+let date = new Date();
+let showDay = false;
 let paused = false;
 
 let islandNames = [
@@ -159,7 +161,7 @@ $(document).ready(function() {
     updateGoodsTransactionPanel();
   });
 
-    $('#goodsTransactionPanel #sell').on('mousedown', function(e) {
+  $('#goodsTransactionPanel #sell').on('mousedown', function(e) {
     goodsTransactionPanel();
   });
 
@@ -185,7 +187,7 @@ $(document).ready(function() {
     }
   });
 
-  $('#goodsTransactionPanel #export').on('mousedown', function(e) {
+  $('#goodsTransactionPanel #exporting').on('mousedown', function(e) {
     selections.exporting = !selections.exporting;
     if (selections.exporting) {
       $(this).removeClass('notExporting');
@@ -225,16 +227,23 @@ $(document).ready(function() {
     purchaseFacilities();
   });
 
-  $('#clockAndPause #hide').on('mousedown', function(e) {
+  $('#clockAndPause #showDay').on('mousedown', function(e) {
+    showDay = !showDay;
+    if (showDay) {
+      $(this).addClass('clickedIn');
+    } else {
+      $(this).removeClass('clickedIn');
+    }
     $('#clockAndPause p').toggle();
   });
+  // $('#clockAndPause #showDay').mousedown();
 
   $('#clockAndPause #pause').on('mousedown', function(e) {
     paused = !paused;
     if (paused) {
-      $(this).addClass('paused'); 
+      $(this).addClass('clickedIn'); 
     } else {
-      $(this).removeClass('paused');
+      $(this).removeClass('clickedIn');
     }
   })
 
@@ -270,6 +279,7 @@ function togglePause() {
 }
 
 function updateClock(day) {
+  let yearsAndMonths = 'BCE ' + (Math.abs(date.getFullYear() -  3300)) + ' - ' + ('0' + date.getMonth()).slice(-2);
   $('#clockAndPause #time').text('Day: ' + day);
 }
 
@@ -382,7 +392,6 @@ function randomNonRepeatingIslandName() {
       return getName(usedNames);
     }
     usedNames.push(name);
-    console.log(name);
     return name;
   }
 }
