@@ -564,9 +564,9 @@ function updateFacilityPurchasePanel() {
   let $quantityDisplay = $('#facilitiesQuantity');
   let facility = selections.selectedFacility;
   $quantityDisplay.attr('max', facility.maximum - facility.total);
-  if (parseInt($quantityDisplay.val()) > facility.maximum) {
-    selections.facilityQuantity = facility.maximum - facility.nonplayer;
-    $quantityDisplay.val(facility.maximum - facility.nonplayer);
+  if (parseInt($quantityDisplay.val()) > facility.maximum - facility.total) {
+    selections.facilityQuantity = facility.maximum - facility.total;
+    $quantityDisplay.val(facility.maximum - facility.total);
   }
   var pricePerFacility = exponentialFacilitesPrice();
   displayPricePerFacility(pricePerFacility);
