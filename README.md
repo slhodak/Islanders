@@ -13,12 +13,15 @@ Islands each have a maximum number of possible groves and mines based on their l
 Over time, islanders build their own groves and mines, causing scarcity for all products decrease.
 When all islands have maximized production and minimized scarcity for all products, the game is over.
 
+Player's location: maroon; Selected Island: green; Exporting Island: turquoise; Importing Island: orange.
+(These all begin as the same island and Player's location (maroon) takes precedence.)
 
 Player begins on a random island, and can travel between islands.
 Player can build production facilities of either type on the island they currently occupy, and can build
 on other islands more of any facility types that the player has previously built on those islands.
+Production facility prices and the 'Buy' button are relevant to the Selected Island.
 
-By default, sales are conducted both from and to the island currently occupied by the player.
+By default, the player is 'not exporting' and sales are conducted both from and to the island currently occupied by the player.
 
 An import island can be specified by using the "Importer" button and selecting the island to receive goods.
 Goods can be sold to the import island by switching the "Exporting/Not exporting" toggle.
