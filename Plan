@@ -42,6 +42,13 @@ NEXT:
 		- BC date counter instead of "Day: "
 
 	ISSUE:
+		Major Bugs:
+			- price being based on scarcity of buyer island post-product-infusion (scarcity change is affecting price before sale is done)
+			- sale maximums need to be limited to scarcity reaching 0 (price reaches 0)
+				- currently goes past 0 and negative price values reached
+			- can click sell button multiple times before transaction goes through with exporting
+				- multiple sales not reflecting actual player stockpile (is player stockpile amt not checked again during transaction? prob not)
+			- player stockpile should be affectd immdiately upon export click--gold influx takes timeout
 		ISLAND CREATION:
 			Object literals cannot refer to their own properties in the dynamic sort of way that I am trying to 
 			implement for the island stat generation function. Use getters or create objects from constructors.
