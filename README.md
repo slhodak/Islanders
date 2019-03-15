@@ -10,7 +10,7 @@ Player can build groves and mines on islands to produce copper and olive oil, an
 Price is inversely proportional to an island's scarcity rating for a given product.
 Scarcity is determined by the population of an island and its productive capacity for the product.
 Islands each have a maximum number of possible groves and mines based on their lushness and rockiness.
-Over time, islanders build their own groves and mines, causing scarcity to for all products decrease.
+Over time, islanders build their own groves and mines, causing scarcity for all products decrease.
 When all islands have maximized production and minimized scarcity for all products, the game is over.
 
 
