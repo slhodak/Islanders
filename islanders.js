@@ -275,7 +275,7 @@ function gameLoop() {
       updateGoodsTransactionPanel();
       updateFacilityPurchasePanel();
     }
-  }, 1000);
+  }, 1500);
 }
 
 function togglePause() {
@@ -283,15 +283,17 @@ function togglePause() {
 }
 
 function updateClock(day) {
-  let yearsAndMonths = 'BCE ' + (Math.abs(date.getFullYear() -  3300)) + ' - ' + ('0' + date.getMonth()).slice(-2);
+  // let yearsAndMonths = 'BCE ' + (Math.abs(date.getFullYear() -  3300)) + ' - ' + ('0' + date.getMonth()).slice(-2);
   $('#clockAndPause #time').text('Day: ' + day);
 }
 
-function playerFacilityOutput() {
-  _.each(islands, function(island) {
-    island.copper.player += island.copper.mines.player;
-    island.oliveOil.player += island.oliveOil.groves.player;
-  });
+function playerFacilityOutput(day) {
+  if (day % 2 === 0) {
+    _.each(islands, function(island) {
+      island.copper.player += island.copper.mines.player;
+      island.oliveOil.player += island.oliveOil.groves.player;
+    });
+  }
 }
 
 function islanderFacilityCreation(day) {
