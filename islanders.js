@@ -269,7 +269,7 @@ function gameLoop() {
       updateClock(day);
       islanderGoodsConsumption(day);
       islanderFacilityCreation(day);
-      playerFacilityOutput();
+      playerFacilityOutput(day);
       updatePlayerStatPanel();
       updateIslandStatPanels();  
       updateGoodsTransactionPanel();
@@ -565,7 +565,7 @@ function updateFacilityPurchasePanel() {
   let facility = selections.selectedFacility;
   $quantityDisplay.attr('max', facility.maximum - facility.total);
   if (parseInt($quantityDisplay.val()) > facility.maximum) {
-    selections.facilityQuantity = facility.maximum;
+    selections.facilityQuantity = facility.maximum - facility.nonplayer;
     $quantityDisplay.val(facility.maximum);
   }
   var pricePerFacility = exponentialFacilitesPrice();
