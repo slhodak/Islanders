@@ -477,11 +477,7 @@ function randomEnvironment() {
 
 // Goods Transaction Panel
 function sellGoods() {
-  setTimeout(
-    function() {
-      goodsTransaction();
-    }, calculateDeliveryTime(activeIslands.currentSeller, activeIslands.currentBuyer)
-  );
+  goodsTransaction();
   updatePlayerStatPanel();
 }
 
@@ -498,9 +494,13 @@ function updateBuyersAndSellers() {
 
 function goodsTransaction() {
   activeIslands.currentSeller[selections.selectedGoodType].player -= selections.goodsQuantity;
-  activeIslands.currentBuyer[selections.selectedGoodType].nonplayer += selections.goodsQuantity;
+  let savedQuantity = selections.goodsQuantity;
+  setTimeout(function() {
+    player.gold += savedQuantity * logGoodsPrice(savedQuantity, activeIslands.currentBuyer[selections.selectedGoodType].scarcity);
+    activeIslands.currentBuyer[selections.selectedGoodType].nonplayer += savedQuantity;
+    updateGoodsTransactionPanel();
+  }, calculateDeliveryTime(activeIslands.currentSeller, activeIslands.currentBuyer));
   
-  player.gold += selections.goodsQuantity * logGoodsPrice(selections.goodsQuantity, activeIslands.currentBuyer[selections.selectedGoodType].scarcity);
   updateGoodsTransactionPanel();
 }
 
