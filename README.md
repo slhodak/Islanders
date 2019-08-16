@@ -1,5 +1,7 @@
 # Islanders
 
+_Note: this project was created in March 2018, when I was a larval hacker. It was a labor of love and an early experience in the challenges of organizing a major personal project._
+
 ## Race against scarcity
 
 This economic trading game is inspired by the ancient Mediterranean.
