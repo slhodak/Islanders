@@ -1,8 +1,5 @@
 # Islanders
 
-(The intentions of this work-in-progress)
-
-
 Economic trading game inspired by the ancient Mediterranean.
 
 Player can build groves and mines on islands to produce copper and olive oil, and sell both for gold.
