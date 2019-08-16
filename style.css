@@ -10,8 +10,6 @@ p {
 }
 
 #root {
-  width: 1000px;
-  height: 500px;
   border: 20px ridge gray;
   background-color: black;
   display: grid;
@@ -37,8 +35,8 @@ p {
 .island::after {
   display: block;
   content: "";
-  height: 16px;
-  width: 16px;
+  height: 20px;
+  width: 20px;
   background-color: rgba(0, 0, 0, 0);
 }
 
