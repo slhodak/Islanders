@@ -1,17 +1,35 @@
 # Islanders
 
-Economic trading game inspired by the ancient Mediterranean.
+## Race against scarcity
 
-Player can build groves and mines on islands to produce copper and olive oil, and sell both for gold.
+This economic trading game is inspired by the ancient Mediterranean.
 
-Price is inversely proportional to an island's scarcity rating for a given product.
-Scarcity is determined by the population of an island and its productive capacity for the product.
-Islands each have a maximum number of possible groves and mines based on their lushness and rockiness.
-Over time, islanders build their own groves and mines, causing scarcity for all products decrease.
+The player can build groves and mines on islands to produce copper and olive oil, and sell both for gold.
+
+## Supply & Demand
+
+Price is inversely proportional to an island's scarcity rating for a given product. Scarcity ratings are hidden to the player but are determined by a number of factors.  
+
+Scarcity is determined by the population of an island and its productive capacity for the product.  
+
+Islands each have a maximum number of possible groves and mines based on their lushness and rockiness.  
+
+Over time, islanders build their own groves and mines, causing scarcity for all products decrease.  
+
 When all islands have maximized production and minimized scarcity for all products, the game is over.
 
-Player's location: maroon; Selected Island: green; Exporting Island: turquoise; Importing Island: orange.
-(These all begin as the same island and Player's location (maroon) takes precedence.)
+## Understanding the Map
+
+There are four designations for islands:  
+
+Player's location: maroon  
+Selected Island: green  
+Exporting Island: turquoise  
+Importing Island: orange  
+
+These all begin as the same island and Player's location takes precedence.
+
+## Buy Facilities, Sell Goods
 
 Player begins on a random island, and can travel between islands.
 Player can build production facilities of either type on the island they currently occupy, and can build
